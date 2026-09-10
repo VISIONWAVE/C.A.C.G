@@ -9,10 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
-<link rel="manifest" href="./images/site.webmanifest">
 </head>
 <body>
 
@@ -89,7 +85,7 @@
       </span>
       <div>
         <h4>Service Times</h4>
-        <p>Sunday School 8&ndash;9am &middot; Glorious Service 9am&ndash;12pm &middot; Tue Prophetic Bible Study 5&ndash;8pm</p>
+        <p data-cacg="service-times">Sunday School 8&ndash;9am &middot; Glorious Service 9am&ndash;12pm &middot; Tue Prophetic Bible Study 5&ndash;8pm</p>
       </div>
     </div>
     <div class="service-item">
@@ -98,7 +94,7 @@
       </span>
       <div>
         <h4>Location</h4>
-        <p>Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State</p>
+        <p data-cacg="address">Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State</p>
       </div>
     </div>
     <div class="service-item">
@@ -107,7 +103,7 @@
       </span>
       <div>
         <h4>Say Hello</h4>
-        <p>cacgospelchannel@gmail.com &middot; +234 906 364 6231</p>
+        <p><span data-cacg="email">cacgworldwide@gmail.com</span> &middot; <span data-cacg="phone">+234 906 364 6231</span></p>
       </div>
     </div>
   </div>
@@ -133,8 +129,8 @@
 <section class="anniversary-banner">
   <div class="container">
     <p class="eyebrow">2nd Church Anniversary</p>
-    <h2>Emmanuel &mdash; God With Us</h2>
-    <p>"They shall call his name Emmanuel, which means God with us." &mdash; Matthew 1:23<br>
+    <h2 data-cacg="anniversary-theme">Emmanuel &mdash; God With Us</h2>
+    <p data-cacg="anniversary-details">"They shall call his name Emmanuel, which means God with us." &mdash; Matthew 1:23<br>
     Anniversary Revival: Sun 20th &ndash; Thu 24th July, 5&ndash;8pm daily &middot; Anniversary Service: Sat 25th July 2026, 10:00am prompt.</p>
     <div class="anniversary-countdown" id="anniversaryCountdown">
       <div class="countdown-box"><span class="num" id="cdDays">00</span><span class="label">Days</span></div>
@@ -180,6 +176,7 @@
       <button class="filter-btn" data-filter="worship">Worship &amp; Media</button>
       <button class="filter-btn" data-filter="youth">Youth</button>
       <button class="filter-btn" data-filter="adults">Bible Study</button>
+      <button class="filter-btn" data-filter="prayer">Prayer</button>
     </div>
     <div class="ministries-grid" id="ministriesGrid">
       <div class="ministry-card" data-category="worship">
@@ -277,7 +274,7 @@
       <p class="eyebrow">What's Coming Up</p>
       <h2>Upcoming Events</h2>
     </div>
-    <div class="events-grid">
+    <div class="events-grid" id="eventsGrid">
       <div class="event-card">
         <div class="event-date"><span class="day">20</span><span class="month">Jul</span></div>
         <div>
@@ -310,14 +307,14 @@
       <div class="give-card">
         <h4>Donations &amp; Anniversary</h4>
         <div class="account-row">
-          <span>UBA</span>
-          <span class="account-number">2237922971</span>
+          <span data-cacg="bank-name">UBA</span>
+          <span class="account-number" data-cacg="account-number">2237922971</span>
         </div>
         <div class="account-row">
           <span>Account Name</span>
-          <span class="account-number">Olusegun Oladeji</span>
+          <span class="account-number" data-cacg="account-name">Olusegun Oladeji</span>
         </div>
-        <button class="copy-btn" data-copy="2237922971">Copy Account Number</button>
+        <button class="copy-btn" data-copy="2237922971" data-cacg="account-copy-btn">Copy Account Number</button>
       </div>
     </div>
   </div>
@@ -372,15 +369,13 @@
       </div>
       <div class="footer-col">
         <h4>Service Times</h4>
-        <p>Sunday School &ndash; 8:00am&ndash;9:00am</p>
-        <p>Glorious Service &ndash; 9:00am&ndash;12:00pm</p>
-        <p>Tue Prophetic Bible Study &ndash; 5&ndash;8pm</p>
+        <p data-cacg="service-times">Sunday School 8&ndash;9am &middot; Glorious Service 9am&ndash;12pm &middot; Tue Prophetic Bible Study 5&ndash;8pm &middot; Fri Revival Hour 5&ndash;8pm</p>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
-        <p>Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State</p>
-        <a href="tel:+2349063646231">+234 906 364 6231</a>
-        <a href="mailto:cacgospelchannel@gmail.com">cacgospelchannel@gmail.com</a>
+        <p data-cacg="address">Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State</p>
+        <a href="tel:+2349063646231" data-cacg="phone">+234 906 364 6231</a>
+        <a href="mailto:cacgworldwide@gmail.com" data-cacg="email">cacgworldwide@gmail.com</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -390,7 +385,7 @@
   </div>
 </footer>
 
-<!-- MODAL POPUP (PLAN A VISIT) -->
+<!-- MODAL POPUP -->
 <div class="modal-overlay" id="visitModalOverlay">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="visitModalTitle">
     <button class="modal-close" id="visitModalClose" aria-label="Close">&times;</button>
@@ -408,7 +403,7 @@
         <span class="form-error">Please enter a valid email.</span>
       </div>
       <div class="form-group" id="visitDateGroup">
-        <label for="visitDate">Which Day?</label>
+        <label for="visitDate">Which Sunday?</label>
         <input type="date" id="visitDate" name="visitDate" required>
         <span class="form-error">Please choose a date.</span>
       </div>
@@ -424,6 +419,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="content.js"></script>
 <script>
   /* ============================================================
      GRACE HARBOR FAMILY CHURCH — HOME PAGE SCRIPT
@@ -499,9 +495,12 @@
     });
   });
 
-  /* 4. COUNTDOWN TIMER for anniversary date (2nd Anniversary — Sat 25th July 2026, 10:00am) */
-  function startAnniversaryCountdown() {
-    const anniversaryDate = new Date('2026-07-25T10:00:00').getTime();
+  /* 4. COUNTDOWN TIMER for anniversary date — defaults to 2nd Anniversary,
+        but content.js can override this once Settings load from the Sheet */
+  let anniversaryTimer;
+  function startAnniversaryCountdown(dateString) {
+    const anniversaryDate = new Date(dateString || '2026-07-25T10:00:00').getTime();
+    if (anniversaryTimer) clearInterval(anniversaryTimer);
     function tick() {
       const now = new Date().getTime();
       const distance = anniversaryDate - now;
@@ -522,9 +521,10 @@
       document.getElementById('cdSeconds').textContent = String(seconds).padStart(2, '0');
     }
     tick();
-    setInterval(tick, 1000);
+    anniversaryTimer = setInterval(tick, 1000);
   }
   startAnniversaryCountdown();
+  window.cacgStartCountdown = startAnniversaryCountdown;
 
   /* 5. PROGRESS BAR ANIMATION on scroll (church project) */
   const progressFill = document.getElementById('projectProgress');
@@ -561,10 +561,8 @@
     if (e.target === visitModalOverlay) closeVisitModal();
   });
 
-  /* 13. FORM VALIDATION: visit modal form (Now Connected to Google Sheets & WhatsApp API) */
+  /* 13. FORM VALIDATION + SUBMISSION: visit modal form */
   const visitForm = document.getElementById('visitForm');
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyI6ebysvNkuzn6aIVWsZpmS3mi0XLqlNh2rp-hX6y85f5hmXQsgRn6u8RhYBvhE9pc/exec";
-
   visitForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     let valid = true;
@@ -582,50 +580,33 @@
       if (!isValid) valid = false;
     });
 
-    if (valid) {
-      const submitButton = visitForm.querySelector('button[type="submit"]');
-      const originalButtonText = submitButton ? submitButton.textContent : "Confirm Visit";
+    if (!valid) return;
 
-      // Change button state to loading
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = "Sending...";
-      }
+    const submitBtn = visitForm.querySelector('button[type="submit"]');
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
 
-      // Map values matching the format expected by the Apps Script
-      const formData = {
-        name: name.value.trim(),
-        email: email.value.trim(),
-        subject: `📅 Visit Date: ${date.value}`,
-        message: "Plan a Visit Request"
-      };
-
-      try {
-        // Submit details directly to Google Sheets & WhatsApp pipeline
-        await fetch(WEB_APP_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain",
-          },
-          body: JSON.stringify(formData)
-        });
-
-        // Clear inputs, close modal, and display beautiful success toast
-        showToast("You're on the list — we look forward to seeing you!");
-        visitForm.reset();
-        closeVisitModal();
-
-      } catch (error) {
-        console.error("Submission failed:", error);
-        showToast("Error processing request. Please try again.");
-      } finally {
-        // Reset the button layout state
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-        }
-      }
+    try {
+      await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'visit',
+          name: name.value.trim(),
+          email: email.value.trim(),
+          date: date.value.trim(),
+          page: window.location.pathname
+        })
+      });
+      showToast("You're on the list — see you Sunday!");
+      visitForm.reset();
+      closeVisitModal();
+    } catch (err) {
+      showToast("Couldn't send — please try again or call us.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
     }
   });
 
