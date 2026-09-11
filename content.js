@@ -29,44 +29,46 @@ function cacgApplySettings(settings) {
   if (!settings || Object.keys(settings).length === 0) return;
 
   // Elements whose visible text IS the value (phone number / email address shown as-is)
+  // Values coming from the Sheet may arrive as numbers (e.g. an all-digit phone
+  // number), so everything is wrapped in String() before using text methods like .replace().
   document.querySelectorAll('[data-cacg="phone"]').forEach((el) => {
     if (settings.Phone) {
-      el.textContent = settings.Phone;
-      el.href = 'tel:' + settings.Phone.replace(/[^\d+]/g, '');
+      el.textContent = String(settings.Phone);
+      el.href = 'tel:' + String(settings.Phone).replace(/[^\d+]/g, '');
     }
   });
   document.querySelectorAll('[data-cacg="email"]').forEach((el) => {
     if (settings.Email) {
-      el.textContent = settings.Email;
-      el.href = 'mailto:' + settings.Email;
+      el.textContent = String(settings.Email);
+      el.href = 'mailto:' + String(settings.Email);
     }
   });
 
   // Elements that are buttons/labels (e.g. "Call Prayer Line") — only the link target changes
   document.querySelectorAll('[data-cacg="phone-href"]').forEach((el) => {
-    if (settings.Phone) el.href = 'tel:' + settings.Phone.replace(/[^\d+]/g, '');
+    if (settings.Phone) el.href = 'tel:' + String(settings.Phone).replace(/[^\d+]/g, '');
   });
   document.querySelectorAll('[data-cacg="whatsapp-href"]').forEach((el) => {
-    if (settings.WhatsApp) el.href = 'https://wa.me/' + settings.WhatsApp.replace(/[^\d]/g, '');
+    if (settings.WhatsApp) el.href = 'https://wa.me/' + String(settings.WhatsApp).replace(/[^\d]/g, '');
   });
 
   document.querySelectorAll('[data-cacg="address"]').forEach((el) => {
-    if (settings.Address) el.textContent = settings.Address;
+    if (settings.Address) el.textContent = String(settings.Address);
   });
   document.querySelectorAll('[data-cacg="service-times"]').forEach((el) => {
-    if (settings.ServiceTimes) el.textContent = settings.ServiceTimes;
+    if (settings.ServiceTimes) el.textContent = String(settings.ServiceTimes);
   });
   document.querySelectorAll('[data-cacg="bank-name"]').forEach((el) => {
-    if (settings.BankName) el.textContent = settings.BankName;
+    if (settings.BankName) el.textContent = String(settings.BankName);
   });
   document.querySelectorAll('[data-cacg="account-number"]').forEach((el) => {
-    if (settings.AccountNumber) el.textContent = settings.AccountNumber;
+    if (settings.AccountNumber) el.textContent = String(settings.AccountNumber);
   });
   document.querySelectorAll('[data-cacg="account-copy-btn"]').forEach((el) => {
-    if (settings.AccountNumber) el.setAttribute('data-copy', settings.AccountNumber);
+    if (settings.AccountNumber) el.setAttribute('data-copy', String(settings.AccountNumber));
   });
   document.querySelectorAll('[data-cacg="account-name"]').forEach((el) => {
-    if (settings.AccountName) el.textContent = settings.AccountName;
+    if (settings.AccountName) el.textContent = String(settings.AccountName);
   });
 
   // Anniversary banner: show/hide + fill content + drive the countdown
@@ -77,12 +79,12 @@ function cacgApplySettings(settings) {
     if (enabled) {
       const themeEl = banner.querySelector('[data-cacg="anniversary-theme"]');
       const detailsEl = banner.querySelector('[data-cacg="anniversary-details"]');
-      if (themeEl && settings.AnniversaryTheme) themeEl.textContent = settings.AnniversaryTheme;
+      if (themeEl && settings.AnniversaryTheme) themeEl.textContent = String(settings.AnniversaryTheme);
       if (detailsEl && (settings.AnniversaryVerse || settings.AnniversaryDetails)) {
         detailsEl.innerHTML = `${settings.AnniversaryVerse || ''}<br>${settings.AnniversaryDetails || ''}`;
       }
       if (settings.AnniversaryDate && typeof window.cacgStartCountdown === 'function') {
-        window.cacgStartCountdown(settings.AnniversaryDate);
+        window.cacgStartCountdown(String(settings.AnniversaryDate));
       }
     }
   }
@@ -170,16 +172,34 @@ function cacgRenderMinistries(ministries) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const settings = await cacgFetchSheet('Settings');
-  cacgApplySettings(settings);
+  try {
+    const settings = await cacgFetchSheet('Settings');
+    cacgApplySettings(settings);
+  } catch (err) {
+    console.warn('CACG content: Settings failed to apply, keeping fallback content.', err);
+  }
 
-  if (document.getElementById('sermonsGrid')) {
-    cacgRenderSermons(await cacgFetchSheet('Sermons'));
+  try {
+    if (document.getElementById('sermonsGrid')) {
+      cacgRenderSermons(await cacgFetchSheet('Sermons'));
+    }
+  } catch (err) {
+    console.warn('CACG content: Sermons failed to render, keeping fallback content.', err);
   }
-  if (document.getElementById('eventsGrid')) {
-    cacgRenderEvents(await cacgFetchSheet('Events'));
+
+  try {
+    if (document.getElementById('eventsGrid')) {
+      cacgRenderEvents(await cacgFetchSheet('Events'));
+    }
+  } catch (err) {
+    console.warn('CACG content: Events failed to render, keeping fallback content.', err);
   }
-  if (document.getElementById('ministriesGrid')) {
-    cacgRenderMinistries(await cacgFetchSheet('Ministries'));
+
+  try {
+    if (document.getElementById('ministriesGrid')) {
+      cacgRenderMinistries(await cacgFetchSheet('Ministries'));
+    }
+  } catch (err) {
+    console.warn('CACG content: Ministries failed to render, keeping fallback content.', err);
   }
 });
