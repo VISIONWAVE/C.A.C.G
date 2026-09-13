@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Christ Alone Prayer Mountain</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  }
+  .login-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    max-width: 380px;
+    width: 100%;
+    margin: 24px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .login-card img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+  }
+  .login-error {
+    color: var(--color-error);
+    font-size: 0.85rem;
+    margin-top: 10px;
+    display: none;
+  }
+  .login-error.is-visible { display: block; }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <img src="images/logo.jpg" alt="Christ Alone Prayer Mountain">
+  <p class="eyebrow" style="justify-content:center;">Restricted Access</p>
+  <h2 style="margin-bottom:8px;">Prophetic Classes</h2>
+  <p style="margin-bottom:24px; font-size:0.9rem;">This section is for authorized teachers and leaders only. Enter the access password to continue.</p>
+
+  <form id="loginForm" novalidate>
+    <div class="form-group">
+      <label for="loginPassword" style="text-align:left; display:block;">Password</label>
+      <input type="password" id="loginPassword" name="loginPassword" required autocomplete="current-password">
+    </div>
+    <p class="login-error" id="loginError">Incorrect password. Please try again.</p>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px;">Enter</button>
+  </form>
+
+  <p style="margin-top:24px; font-size:0.82rem;"><a href="index.html" style="color:var(--color-gold-deep); font-weight:600;">&larr; Back to Home</a></p>
+</div>
+
+<script>
+  const loginForm = document.getElementById('loginForm');
+  const loginError = document.getElementById('loginError');
+
+  function getRedirectTarget() {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    // Only allow redirecting to a local page, never an external URL
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+      return redirect;
+    }
+    return '/prophetic/index.html';
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.classList.remove('is-visible');
+
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Checking...';
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: document.getElementById('loginPassword').value })
+      });
+
+      if (res.ok) {
+        window.location.href = getRedirectTarget();
+      } else {
+        loginError.classList.add('is-visible');
+      }
+    } catch (err) {
+      loginError.textContent = "Couldn't reach the server — please try again.";
+      loginError.classList.add('is-visible');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
+  });
+</script>
+</body>
+</html>
