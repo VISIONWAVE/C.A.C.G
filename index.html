@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Christ Apostolic Church, Christ Alone Prayer Mountain (Finger of God DCC) | One Fold, One Shepherd</title>
 <meta name="description" content="Christ Apostolic Church, Christ Alone Prayer Mountain, Ilaro, Ogun State — join us for worship, sermons, ministries, and community. Sunday School 8am, Glorious Service 9am.">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="manifest" href="images/site.webmanifest">
 <link rel="stylesheet" href="style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +72,7 @@
          with: <video autoplay muted loop playsinline poster="images/pastor-preaching.jpg">
                  <source src="images/worship-bg.mp4" type="video/mp4">
                </video> -->
-    <img src="images/pastor.jpg" alt="Pastor Olusegun Oladeji ministering at Christ Apostolic Church, Christ Alone Prayer Mountain">
+    <img src="images/pastor.jpg" alt="Prophet Olusegun Oladeji ministering at Christ Apostolic Church, Christ Alone Prayer Mountain">
   </div>
   <div class="hero-content">
     <p class="eyebrow hero-eyebrow">Welcome Home</p>
@@ -117,13 +122,13 @@
 <section class="about-preview section">
   <div class="container">
     <div class="about-media-frame about-media">
-      <img src="images/pastor-preaching.jpg" alt="Pastor Olusegun Oladeji preaching at Christ Apostolic Church, Christ Alone Prayer Mountain">
+      <img src="images/pastor-preaching.jpg" alt="Prophet Olusegun Oladeji preaching at Christ Apostolic Church, Christ Alone Prayer Mountain">
     </div>
     <div class="about-text">
       <p class="eyebrow">Who We Are</p>
       <h2>A family built on grace, growing in purpose.</h2>
       <p>Since our founding in 2024, Christ Apostolic Church, Christ Alone Prayer Mountain (Finger of God DCC) has been a spiritual home for individuals and families in Ilaro, Ogun State — offering sound biblical teaching, fervent prayer, and warm community.</p>
-      <p>Led by Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu), we exist to help people encounter God, discover their purpose, and live it out with courage.</p>
+      <p>Led by Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu), we exist to help people encounter God, discover their purpose, and live it out with courage.</p>
       <a href="about.html" class="btn btn-navy">Learn Our Story</a>
     </div>
   </div>
@@ -161,7 +166,7 @@
       <div class="sermon-meta">
         <p class="eyebrow" style="color:var(--color-gold);">June 29, 2026</p>
         <h3 style="color:#fff;">Anchored: Standing Firm in Shifting Seasons</h3>
-        <p>Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu) unpacks what it means to stay rooted in faith when everything around us feels uncertain.</p>
+        <p>Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu) unpacks what it means to stay rooted in faith when everything around us feels uncertain.</p>
         <a href="sermons.html" class="btn btn-outline" style="margin-top:16px;">View All Sermons</a>
       </div>
     </div>
@@ -614,14 +619,17 @@
     }
   });
 
-  /* 7. TABS/FILTER: ministries filter on home */
+  /* 7. TABS/FILTER: ministries filter on home
+        Cards are re-queried live on each click (not captured once) because
+        content.js may replace the whole grid with real Sheet data after
+        this script first runs. */
   const filterButtons = document.querySelectorAll('#ministryFilters .filter-btn');
-  const ministryCards = document.querySelectorAll('#ministriesGrid .ministry-card');
   filterButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterButtons.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       const filter = btn.getAttribute('data-filter');
+      const ministryCards = document.querySelectorAll('#ministriesGrid .ministry-card');
       ministryCards.forEach((card) => {
         const match = filter === 'all' || card.getAttribute('data-category') === filter;
         card.classList.toggle('is-hidden', !match);

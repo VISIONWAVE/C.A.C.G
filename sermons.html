@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sermons | Christ Apostolic Church, Christ Alone Prayer Mountain</title>
 <meta name="description" content="Watch and download the latest sermons from Christ Apostolic Church, Christ Alone Prayer Mountain. Search by topic or date.">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="manifest" href="images/site.webmanifest">
 <link rel="stylesheet" href="style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +102,7 @@
         <div class="body">
           <span class="date">June 29, 2026</span>
           <h3>Anchored: Standing Firm in Shifting Seasons</h3>
-          <p>Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Faith</p>
+          <p>Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Faith</p>
           <div class="actions">
             <a href="#" download>Download MP3</a>
           </div>
@@ -112,7 +117,7 @@
         <div class="body">
           <span class="date">June 22, 2026</span>
           <h3>The Home That Hosts Heaven</h3>
-          <p>Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Family</p>
+          <p>Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Family</p>
           <div class="actions">
             <a href="#" download>Download MP3</a>
           </div>
@@ -142,7 +147,7 @@
         <div class="body">
           <span class="date">June 8, 2026</span>
           <h3>The Language of Heaven</h3>
-          <p>Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Prayer</p>
+          <p>Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Prayer</p>
           <div class="actions">
             <a href="#" download>Download MP3</a>
           </div>
@@ -157,7 +162,7 @@
         <div class="body">
           <span class="date">June 1, 2026</span>
           <h3>Faith That Outlasts the Storm</h3>
-          <p>Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Faith</p>
+          <p>Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Faith</p>
           <div class="actions">
             <a href="#" download>Download MP3</a>
           </div>
@@ -172,7 +177,7 @@
         <div class="body">
           <span class="date">May 25, 2026</span>
           <h3>Steward Your Season</h3>
-          <p>Pastor Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Purpose</p>
+          <p>Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu) &middot; Purpose</p>
           <div class="actions">
             <a href="#" download>Download MP3</a>
           </div>
@@ -355,15 +360,18 @@
     }
   });
 
-  /* SERMON SEARCH/FILTER: by topic (buttons) and keyword (search box) */
+  /* SERMON SEARCH/FILTER: by topic (buttons) and keyword (search box)
+     Cards are re-queried live each time (not captured once) because
+     content.js may replace the whole grid with real Sheet data after
+     this script first runs. */
   const searchInput = document.getElementById('sermonSearch');
   const filterButtons = document.querySelectorAll('#sermonFilters .filter-btn');
-  const sermonCards = document.querySelectorAll('#sermonsGrid .sermon-card');
   const noResults = document.getElementById('noResults');
   let activeCategory = 'all';
 
   function applySermonFilters() {
     const keyword = searchInput.value.trim().toLowerCase();
+    const sermonCards = document.querySelectorAll('#sermonsGrid .sermon-card');
     let visibleCount = 0;
     sermonCards.forEach((card) => {
       const matchesCategory = activeCategory === 'all' || card.getAttribute('data-category') === activeCategory;
