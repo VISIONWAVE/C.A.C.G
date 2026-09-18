@@ -862,6 +862,23 @@ p { color: var(--color-ink-soft); }
   filter: grayscale(15%) brightness(0.7);
 }
 
+.sermon-audio-only {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--color-navy-dark), var(--color-navy));
+  color: var(--color-gold);
+}
+
+.sermon-audio-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-white);
+}
+
 .sermon-video-label {
   position: absolute;
   inset: 0;
@@ -1061,6 +1078,21 @@ p { color: var(--color-ink-soft); }
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 22px;
+}
+
+.event-media {
+  margin-top: 14px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+.event-media img,
+.event-media iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
 }
 
 .event-date {

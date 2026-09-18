@@ -132,23 +132,37 @@ function cacgRenderSermons(sermons) {
   const fullGrid = document.getElementById('sermonsGrid');
   if (!fullGrid || !sermons || sermons.length === 0) return; // keep fallback content if nothing published yet
 
-  fullGrid.innerHTML = sermons.map((s) => `
+  fullGrid.innerHTML = sermons.map((s) => {
+    let thumbHtml;
+    if (s.youtube_link) {
+      thumbHtml = `<div class="thumb"><iframe loading="lazy" data-src="${s.youtube_link}" title="${s.title || 'Sermon'}" allowfullscreen></iframe></div>`;
+    } else if (s.audio_file) {
+      // Audio exists — show a clean audio-focused card, no "coming soon" messaging since content is genuinely available
+      thumbHtml = `
+        <div class="thumb sermon-audio-only">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M9 18V5L20 3V16" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="16" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+          <div class="sermon-audio-label">Audio Message</div>
+        </div>`;
+    } else {
+      // Genuinely nothing uploaded yet
+      thumbHtml = `<div class="thumb sermon-video-static"><img src="images/pastor-preaching.jpg" alt="Sermon coming soon"><div class="sermon-video-label">Coming Soon</div></div>`;
+    }
+
+    return `
     <div class="sermon-card" data-category="${(s.category || '').toLowerCase()}" data-title="${(s.title || '').toLowerCase()}">
-      <div class="thumb ${s.youtube_link ? '' : 'sermon-video-static'}">
-        ${s.youtube_link
-          ? `<iframe loading="lazy" data-src="${s.youtube_link}" title="${s.title || 'Sermon'}" allowfullscreen></iframe>`
-          : `<img src="images/pastor-preaching.jpg" alt="Sermon video coming soon"><div class="sermon-video-label">Video Coming Soon</div>`}
-      </div>
+      ${thumbHtml}
       <div class="body">
         <span class="date">${s.sermon_date ? new Date(s.sermon_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</span>
         <h3>${s.title || 'Untitled Sermon'}</h3>
         <p>${s.speaker || ''} &middot; ${s.category || ''}</p>
+        ${s.audio_file ? `<audio controls preload="none" style="width:100%; margin-top:12px;"><source src="${s.audio_file}" /></audio>` : ''}
         <div class="actions">
           ${s.audio_file ? `<a href="${s.audio_file}" download target="_blank" rel="noopener">Download MP3</a>` : ''}
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   const lazyIframes = fullGrid.querySelectorAll('iframe[data-src]');
   if ('IntersectionObserver' in window) {
@@ -173,6 +187,11 @@ function cacgRenderEvents(events) {
     const d = ev.event_date ? new Date(ev.event_date) : null;
     const day = d ? d.getDate() : '';
     const month = d ? d.toLocaleDateString('en-GB', { month: 'short' }) : '';
+    const mediaHtml = ev.video_url
+      ? `<div class="event-media"><iframe loading="lazy" src="${ev.video_url.replace('watch?v=', 'embed/')}" title="${ev.title || 'Event video'}" allowfullscreen></iframe></div>`
+      : ev.image_url
+        ? `<div class="event-media"><img src="${ev.image_url}" alt="${ev.title || 'Event'}"></div>`
+        : '';
     return `
       <div class="event-card">
         <div class="event-date"><span class="day">${day}</span><span class="month">${month}</span></div>
@@ -180,6 +199,7 @@ function cacgRenderEvents(events) {
           <h3>${ev.title || 'Untitled Event'}</h3>
           <p>${d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) : ''}${ev.event_time ? ' &middot; ' + ev.event_time : ''}${ev.location ? ' &middot; ' + ev.location : ''}</p>
           <p>${ev.description || ''}</p>
+          ${mediaHtml}
         </div>
       </div>
     `;

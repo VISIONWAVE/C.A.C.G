@@ -20,7 +20,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const ALLOWED_TABLES = {
   sermons: ['title', 'sermon_date', 'speaker', 'category', 'youtube_link', 'audio_file', 'published'],
-  events: ['title', 'event_date', 'event_time', 'location', 'description', 'published'],
+  events: ['title', 'event_date', 'event_time', 'location', 'description', 'image_url', 'video_url', 'published'],
   ministries: ['name', 'category', 'description', 'published'],
   settings: [
     'phone', 'whatsapp', 'email', 'address', 'service_times',
