@@ -70,39 +70,6 @@ async function cacgFetchTable(tableName) {
   }
 }
 
-/**
- * Escapes text before it's inserted into innerHTML. Sermons/Events/
- * Ministries now come from an admin dashboard where anyone with the
- * password can type free-text into title/description/etc. fields — and
- * event video_url/image_url get dropped straight into an iframe/img `src`
- * attribute. Nothing here stops a stray `<script>` or a quote character
- * that breaks out of an attribute, so escape everything on the way in.
- */
-function cacgEscapeHtml(value) {
-  const div = document.createElement('div');
-  div.textContent = value == null ? '' : String(value);
-  return div.innerHTML;
-}
-
-/** Same, but also escapes double quotes — use this for anything that
- *  lands inside a quoted HTML attribute (href, src, data-*, title). */
-function cacgEscapeAttr(value) {
-  return cacgEscapeHtml(value).replace(/"/g, '&quot;');
-}
-
-/** Only allow http(s) URLs through into src/href attributes — blocks
- *  "javascript:" and other schemes someone could type into a Video/Image
- *  URL field to run script when a visitor's browser loads the page. */
-function cacgSafeUrl(value) {
-  if (!value) return '';
-  try {
-    const url = new URL(String(value), window.location.origin);
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : '';
-  } catch {
-    return '';
-  }
-}
-
 function cacgApplySettings(settings) {
   if (!settings) return;
 
@@ -152,7 +119,7 @@ function cacgApplySettings(settings) {
       const detailsEl = banner.querySelector('[data-cacg="anniversary-details"]');
       if (themeEl && settings.anniversary_theme) themeEl.textContent = settings.anniversary_theme;
       if (detailsEl && (settings.anniversary_verse || settings.anniversary_details)) {
-        detailsEl.innerHTML = `${cacgEscapeHtml(settings.anniversary_verse || '')}<br>${cacgEscapeHtml(settings.anniversary_details || '')}`;
+        detailsEl.innerHTML = `${settings.anniversary_verse || ''}<br>${settings.anniversary_details || ''}`;
       }
       if (settings.anniversary_date && typeof window.cacgStartCountdown === 'function') {
         window.cacgStartCountdown(String(settings.anniversary_date));
@@ -165,46 +132,23 @@ function cacgRenderSermons(sermons) {
   const fullGrid = document.getElementById('sermonsGrid');
   if (!fullGrid || !sermons || sermons.length === 0) return; // keep fallback content if nothing published yet
 
-  fullGrid.innerHTML = sermons.map((s) => {
-    const title = cacgEscapeHtml(s.title || 'Untitled Sermon');
-    const titleAttr = cacgEscapeAttr(s.title || 'Sermon');
-    const category = cacgEscapeHtml(s.category || '');
-    const speaker = cacgEscapeHtml(s.speaker || '');
-    const categoryAttr = cacgEscapeAttr((s.category || '').toLowerCase());
-    const titleDataAttr = cacgEscapeAttr((s.title || '').toLowerCase());
-    const youtubeUrl = cacgSafeUrl(s.youtube_link);
-    const audioUrl = cacgSafeUrl(s.audio_file);
-
-    let thumbHtml;
-    if (youtubeUrl) {
-      thumbHtml = `<div class="thumb"><iframe loading="lazy" data-src="${cacgEscapeAttr(youtubeUrl)}" title="${titleAttr}" allowfullscreen></iframe></div>`;
-    } else if (audioUrl) {
-      // Audio exists — show a clean audio-focused card, no "coming soon" messaging since content is genuinely available
-      thumbHtml = `
-        <div class="thumb sermon-audio-only">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M9 18V5L20 3V16" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="16" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
-          <div class="sermon-audio-label">Audio Message</div>
-        </div>`;
-    } else {
-      // Genuinely nothing uploaded yet
-      thumbHtml = `<div class="thumb sermon-video-static"><img src="images/pastor-preaching.jpg" alt="Sermon coming soon"><div class="sermon-video-label">Coming Soon</div></div>`;
-    }
-
-    return `
-    <div class="sermon-card" data-category="${categoryAttr}" data-title="${titleDataAttr}">
-      ${thumbHtml}
+  fullGrid.innerHTML = sermons.map((s) => `
+    <div class="sermon-card" data-category="${(s.category || '').toLowerCase()}" data-title="${(s.title || '').toLowerCase()}">
+      <div class="thumb ${s.youtube_link ? '' : 'sermon-video-static'}">
+        ${s.youtube_link
+          ? `<iframe loading="lazy" data-src="${s.youtube_link}" title="${s.title || 'Sermon'}" allowfullscreen></iframe>`
+          : `<img src="images/pastor-preaching.jpg" alt="Sermon video coming soon"><div class="sermon-video-label">Video Coming Soon</div>`}
+      </div>
       <div class="body">
         <span class="date">${s.sermon_date ? new Date(s.sermon_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</span>
-        <h3>${title}</h3>
-        <p>${speaker} &middot; ${category}</p>
-        ${audioUrl ? `<audio controls preload="none" style="width:100%; margin-top:12px;"><source src="${cacgEscapeAttr(audioUrl)}" /></audio>` : ''}
+        <h3>${s.title || 'Untitled Sermon'}</h3>
+        <p>${s.speaker || ''} &middot; ${s.category || ''}</p>
         <div class="actions">
-          ${audioUrl ? `<a href="${cacgEscapeAttr(audioUrl)}" download target="_blank" rel="noopener">Download MP3</a>` : ''}
+          ${s.audio_file ? `<a href="${s.audio_file}" download target="_blank" rel="noopener">Download MP3</a>` : ''}
         </div>
       </div>
     </div>
-  `;
-  }).join('');
+  `).join('');
 
   const lazyIframes = fullGrid.querySelectorAll('iframe[data-src]');
   if ('IntersectionObserver' in window) {
@@ -229,26 +173,13 @@ function cacgRenderEvents(events) {
     const d = ev.event_date ? new Date(ev.event_date) : null;
     const day = d ? d.getDate() : '';
     const month = d ? d.toLocaleDateString('en-GB', { month: 'short' }) : '';
-    const title = cacgEscapeHtml(ev.title || 'Untitled Event');
-    const titleAttr = cacgEscapeAttr(ev.title || 'Event');
-    const time = cacgEscapeHtml(ev.event_time || '');
-    const location = cacgEscapeHtml(ev.location || '');
-    const description = cacgEscapeHtml(ev.description || '');
-    const videoUrl = cacgSafeUrl(ev.video_url);
-    const imageUrl = cacgSafeUrl(ev.image_url);
-    const mediaHtml = videoUrl
-      ? `<div class="event-media"><iframe loading="lazy" src="${cacgEscapeAttr(videoUrl.replace('watch?v=', 'embed/'))}" title="${titleAttr}" allowfullscreen></iframe></div>`
-      : imageUrl
-        ? `<div class="event-media"><img src="${cacgEscapeAttr(imageUrl)}" alt="${titleAttr}"></div>`
-        : '';
     return `
       <div class="event-card">
         <div class="event-date"><span class="day">${day}</span><span class="month">${month}</span></div>
         <div>
-          <h3>${title}</h3>
-          <p>${d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) : ''}${time ? ' &middot; ' + time : ''}${location ? ' &middot; ' + location : ''}</p>
-          <p>${description}</p>
-          ${mediaHtml}
+          <h3>${ev.title || 'Untitled Event'}</h3>
+          <p>${d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) : ''}${ev.event_time ? ' &middot; ' + ev.event_time : ''}${ev.location ? ' &middot; ' + ev.location : ''}</p>
+          <p>${ev.description || ''}</p>
         </div>
       </div>
     `;
@@ -259,24 +190,18 @@ function cacgRenderMinistries(ministries) {
   const grid = document.getElementById('ministriesGrid');
   if (!grid || !ministries || ministries.length === 0) return; // keep fallback content if nothing published yet
 
-  grid.innerHTML = ministries.map((m) => {
-    const categoryAttr = cacgEscapeAttr((m.category || '').toLowerCase());
-    const category = cacgEscapeHtml(m.category || '');
-    const name = cacgEscapeHtml(m.name || 'Untitled Ministry');
-    const description = cacgEscapeHtml(m.description || '');
-    return `
-    <div class="ministry-card" data-category="${categoryAttr}">
+  grid.innerHTML = ministries.map((m) => `
+    <div class="ministry-card" data-category="${(m.category || '').toLowerCase()}">
       <div class="ministry-media">
         <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/></svg>
       </div>
       <div class="ministry-body">
-        <span class="tag">${category}</span>
-        <h3>${name}</h3>
-        <p>${description}</p>
+        <span class="tag">${m.category || ''}</span>
+        <h3>${m.name || 'Untitled Ministry'}</h3>
+        <p>${m.description || ''}</p>
       </div>
     </div>
-  `;
-  }).join('');
+  `).join('');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
