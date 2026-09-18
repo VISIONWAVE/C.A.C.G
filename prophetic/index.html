@@ -105,11 +105,18 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../auth-shared.js"></script>
 <script>
   document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
-    await fetch('/api/logout', { method: 'POST' });
-    window.location.href = '../index.html';
+    try {
+      const client = cacgCreateAuthClient();
+      await client.auth.signOut();
+    } catch (err) {
+      console.warn('Sign-out request failed, clearing local state anyway.', err);
+    }
+    window.location.href = '../login.html';
   });
 </script>
 </body>

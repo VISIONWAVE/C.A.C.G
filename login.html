@@ -6,110 +6,126 @@
 <title>Login | Christ Alone Prayer Mountain</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-<link rel="manifest" href="images/site.webmanifest">
 <link rel="stylesheet" href="style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
-  }
-  .login-card {
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
-    padding: 40px 36px;
-    max-width: 380px;
-    width: 100%;
-    margin: 24px;
-    box-shadow: var(--shadow-lg);
-    text-align: center;
-  }
-  .login-card img {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    margin: 0 auto 18px;
-  }
-  .login-error {
-    color: var(--color-error);
-    font-size: 0.85rem;
-    margin-top: 10px;
-    display: none;
-  }
-  .login-error.is-visible { display: block; }
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--color-navy) 0%,var(--color-navy-dark) 100%);padding:24px 0}.login-card{background:var(--color-white);border-radius:var(--radius-lg);padding:36px;max-width:440px;width:calc(100% - 32px);box-shadow:var(--shadow-lg);text-align:center}.login-card img{width:58px;height:58px;object-fit:cover;border-radius:50%;margin:0 auto 16px}.intro{color:var(--color-text-muted);font-size:.9rem;line-height:1.6;margin:0 auto 22px}.google-btn{width:100%;min-height:48px;border:1px solid #dadce0;border-radius:8px;background:#fff;color:#202124;font:600 .92rem Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px}.google-btn:hover{background:#f8f9fa}.google-icon{width:20px;height:20px}.divider{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--color-text-muted);font-size:.78rem}.divider:before,.divider:after{content:"";height:1px;flex:1;background:#e5e7eb}.tabs{display:grid;grid-template-columns:1fr 1fr;background:#f4f5f7;border-radius:9px;padding:4px;margin-bottom:20px}.tab{border:0;border-radius:7px;background:transparent;padding:10px;color:var(--color-text-muted);font:600 .85rem Inter,sans-serif;cursor:pointer}.tab.active{background:#fff;color:var(--color-navy);box-shadow:0 1px 3px rgba(0,0,0,.08)}.panel{display:none;text-align:left}.panel.active{display:block}.form-group{margin-bottom:15px}.form-group label{display:block;margin-bottom:7px;font-size:.83rem;font-weight:600}.form-group input{width:100%;box-sizing:border-box}.password{position:relative}.password input{padding-right:65px}.show{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--color-gold-deep);font:600 .76rem Inter,sans-serif;cursor:pointer}.submit{width:100%;margin-top:5px}.forgot{display:flex;justify-content:flex-end;margin:-5px 0 14px}.link{color:var(--color-gold-deep);font-size:.78rem;font-weight:600;text-decoration:none}.message{display:none;border-radius:8px;padding:10px 12px;margin-bottom:15px;font-size:.8rem;line-height:1.45}.message.show{display:block}.message.error{background:#fff1f2;color:#9f1239;border:1px solid #fecdd3}.message.success{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}.note{text-align:center;color:var(--color-text-muted);font-size:.74rem;line-height:1.5;margin:17px 0 0}.back{display:inline-block;margin-top:22px;color:var(--color-gold-deep);font-size:.82rem;font-weight:600}@media(max-width:480px){.login-card{padding:28px 20px}}
 </style>
 </head>
 <body>
-
-<div class="login-card">
-  <img src="images/logo.jpg" alt="Christ Alone Prayer Mountain">
-  <p class="eyebrow" style="justify-content:center;">Restricted Access</p>
-  <h2 style="margin-bottom:8px;">Prophetic Classes</h2>
-  <p style="margin-bottom:24px; font-size:0.9rem;">This section is for authorized teachers and leaders only. Enter the access password to continue.</p>
-
-  <form id="loginForm" novalidate>
-    <div class="form-group">
-      <label for="loginPassword" style="text-align:left; display:block;">Password</label>
-      <input type="password" id="loginPassword" name="loginPassword" required autocomplete="current-password">
-    </div>
-    <p class="login-error" id="loginError">Incorrect password. Please try again.</p>
-    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px;">Enter</button>
-  </form>
-
-  <p style="margin-top:24px; font-size:0.82rem;"><a href="index.html" style="color:var(--color-gold-deep); font-weight:600;">&larr; Back to Home</a></p>
-</div>
-
+<main class="login-card">
+<img src="images/logo.jpg" alt="Christ Alone Prayer Mountain">
+<p class="eyebrow" style="justify-content:center">Restricted Access</p>
+<h2 style="margin-bottom:8px">Prophetic School</h2>
+<p class="intro">Sign in to access Prophetic Classes and resources. This area is for authorized teachers, leaders and registered students.</p>
+<div id="message" class="message" role="alert"></div>
+<button type="button" class="google-btn" id="googleBtn">
+<svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.23c0-.7-.06-1.37-.18-2.02H12v3.83h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.2z"/><path fill="#34A853" d="M12 21.75c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.93-3.31.93-2.54 0-4.69-1.72-5.46-4.03H3.29v2.52A9.75 9.75 0 0 0 12 21.75z"/><path fill="#FBBC05" d="M6.54 13.84A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.26.31-1.84V7.64H3.29A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.36l3.25-2.52z"/><path fill="#EA4335" d="M12 6.13c1.43 0 2.71.49 3.72 1.46l2.79-2.79C16.84 3.1 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.71 5.39l3.25 2.52C7.31 7.85 9.46 6.13 12 6.13z"/></svg>
+Continue with Google
+</button>
+<div class="divider"><span>or use your email</span></div>
+<div class="tabs"><button class="tab active" id="loginTab" type="button">Sign in</button><button class="tab" id="registerTab" type="button">Create account</button></div>
+<section class="panel active" id="loginPanel">
+<form id="loginForm" novalidate>
+<div class="form-group"><label for="loginEmail">Email address</label><input type="email" id="loginEmail" required autocomplete="email" placeholder="you@example.com"></div>
+<div class="form-group"><label for="loginPassword">Password</label><div class="password"><input type="password" id="loginPassword" required autocomplete="current-password" placeholder="Enter your password"><button class="show" type="button" data-target="loginPassword">Show</button></div></div>
+<div class="forgot"><a class="link" href="#" id="forgot">Forgot password?</a></div>
+<button class="btn btn-primary submit" id="loginSubmit" type="submit">Sign in</button>
+</form>
+</section>
+<section class="panel" id="registerPanel">
+<form id="registerForm" novalidate>
+<div class="form-group"><label for="name">Full name</label><input type="text" id="name" required autocomplete="name" placeholder="Your full name"></div>
+<div class="form-group"><label for="email">Email address</label><input type="email" id="email" required autocomplete="email" placeholder="you@example.com"></div>
+<div class="form-group"><label for="password">Create password</label><div class="password"><input type="password" id="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"><button class="show" type="button" data-target="password">Show</button></div></div>
+<div class="form-group"><label for="confirm">Confirm password</label><div class="password"><input type="password" id="confirm" required minlength="8" autocomplete="new-password" placeholder="Repeat your password"><button class="show" type="button" data-target="confirm">Show</button></div></div>
+<button class="btn btn-primary submit" id="registerSubmit" type="submit">Create account</button>
+<p class="note">New accounts may be reviewed by the church before Prophetic School access is granted.</p>
+</form>
+</section>
+<a href="index.html" class="back">&larr; Back to Home</a>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth-shared.js"></script>
 <script>
-  const loginForm = document.getElementById('loginForm');
-  const loginError = document.getElementById('loginError');
+(() => {
+const msg=document.getElementById('message');
+const loginTab=document.getElementById('loginTab'),registerTab=document.getElementById('registerTab');
+const loginPanel=document.getElementById('loginPanel'),registerPanel=document.getElementById('registerPanel');
+function message(text,type='error'){msg.textContent=text;msg.className='message show '+type}
+function clear(){msg.textContent='';msg.className='message'}
+function tab(register){loginTab.classList.toggle('active',!register);registerTab.classList.toggle('active',register);loginPanel.classList.toggle('active',!register);registerPanel.classList.toggle('active',register);clear()}
+loginTab.onclick=()=>tab(false);registerTab.onclick=()=>tab(true);
+document.querySelectorAll('.show').forEach(b=>b.onclick=()=>{const i=document.getElementById(b.dataset.target);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show':'Hide'});
+function target(){const r=new URLSearchParams(location.search).get('redirect');return r&&r.startsWith('/')&&!r.startsWith('//')?r:'/prophetic/index.html'}
 
-  function getRedirectTarget() {
-    const params = new URLSearchParams(window.location.search);
-    const redirect = params.get('redirect');
-    // Only allow redirecting to a local page, never an external URL
-    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
-      return redirect;
-    }
-    return '/prophetic/index.html';
-  }
+// Client is created lazily (not at the top of the script) so that a slow
+// or blocked Supabase CDN script can't crash this entire file before the
+// tab-switching / show-password buttons above even get wired up.
+let _client=null;
+function client(){ if(!_client) _client=cacgCreateAuthClient(); return _client; }
 
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    loginError.classList.remove('is-visible');
+document.getElementById('googleBtn').onclick=async ()=>{
+  clear();
+  try{
+    const redirectTo = window.location.origin + target();
+    const { error } = await client().auth.signInWithOAuth({ provider:'google', options:{ redirectTo } });
+    if (error) throw error;
+    // On success the browser is redirected to Google, then back here — nothing more to do in this tab.
+  }catch(x){ message(x.message||'Could not start Google sign-in.'); }
+};
 
-    const submitBtn = loginForm.querySelector('button[type="submit"]');
-    const originalLabel = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Checking...';
+document.getElementById('loginForm').onsubmit=async e=>{
+  e.preventDefault();clear();
+  const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value,b=document.getElementById('loginSubmit');
+  if(!email||!password)return message('Please enter your email address and password.');
+  b.disabled=true;b.textContent='Signing in...';
+  try{
+    const { error } = await client().auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    location.href=target();
+  }catch(x){
+    message(x.message==='Invalid login credentials' ? 'The email or password is incorrect.' : (x.message||'Could not reach the server.'));
+  }finally{b.disabled=false;b.textContent='Sign in'}
+};
 
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: document.getElementById('loginPassword').value })
-      });
+document.getElementById('registerForm').onsubmit=async e=>{
+  e.preventDefault();clear();
+  const name=document.getElementById('name').value.trim(),email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,confirm=document.getElementById('confirm').value,b=document.getElementById('registerSubmit');
+  if(!name||!email||!password||!confirm)return message('Please complete all registration fields.');
+  if(password.length<8)return message('Your password must contain at least 8 characters.');
+  if(password!==confirm)return message('The passwords do not match.');
+  b.disabled=true;b.textContent='Creating account...';
+  try{
+    const { data, error } = await client().auth.signUp({
+      email, password,
+      options:{ data:{ full_name:name }, emailRedirectTo: window.location.origin + target() }
+    });
+    if (error) throw error;
+    // New accounts start "pending" (see admin-setup/auth-schema.sql) — they
+    // don't get into /prophetic/ until an admin approves them in Table
+    // Editor, even once they've confirmed their email and signed in.
+    message('Account created. Please check your email to confirm it, then sign in — your access is reviewed before Prophetic School content unlocks.','success');
+    if (data.session) setTimeout(()=>location.href=target(),900);
+    else setTimeout(()=>tab(false),1200);
+  }catch(x){
+    message(x.message && x.message.toLowerCase().includes('already registered') ? 'An account with this email already exists. Please sign in instead.' : (x.message||'Could not create your account.'));
+  }finally{b.disabled=false;b.textContent='Create account'}
+};
 
-      if (res.ok) {
-        window.location.href = getRedirectTarget();
-      } else {
-        loginError.classList.add('is-visible');
-      }
-    } catch (err) {
-      loginError.textContent = "Couldn't reach the server — please try again.";
-      loginError.classList.add('is-visible');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalLabel;
-    }
-  });
+document.getElementById('forgot').onclick=async e=>{
+  e.preventDefault();clear();
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email){message('Enter your email address first, then select “Forgot password?”.');document.getElementById('loginEmail').focus();return}
+  try{
+    const { error } = await client().auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset-password.html' });
+    if (error) throw error;
+    message('If an account exists for this email, a password-reset link has been sent.','success');
+  }catch(x){ message(x.message||'Could not start the password reset.'); }
+};
+})();
 </script>
 </body>
 </html>

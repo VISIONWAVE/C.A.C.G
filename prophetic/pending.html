@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access Pending | Prophetic School (Internal)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+<link rel="stylesheet" href="../style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--color-navy) 0%,var(--color-navy-dark) 100%);padding:24px 0}
+  .status-card{background:var(--color-white);border-radius:var(--radius-lg);padding:40px 36px;max-width:440px;width:calc(100% - 32px);box-shadow:var(--shadow-lg);text-align:center}
+  .status-card img{width:56px;height:56px;border-radius:50%;margin:0 auto 18px}
+  .back{display:inline-block;margin-top:22px;color:var(--color-gold-deep);font-size:.82rem;font-weight:600}
+</style>
+</head>
+<body>
+<main class="status-card">
+<img src="../images/logo.jpg" alt="Christ Alone Prayer Mountain">
+<p class="eyebrow" style="justify-content:center;">Prophetic School</p>
+<h2 id="statusTitle" style="margin-bottom:12px;">Checking your access...</h2>
+<p id="statusText">One moment.</p>
+<a href="#" id="logoutBtn" class="back">Sign out</a>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../auth-shared.js"></script>
+<script>
+(() => {
+  const titleEl = document.getElementById('statusTitle');
+  const textEl = document.getElementById('statusText');
+  let client;
+  try {
+    client = cacgCreateAuthClient();
+  } catch (err) {
+    titleEl.textContent = "Couldn't connect";
+    textEl.textContent = err.message;
+    return;
+  }
+
+  async function checkStatus() {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) {
+      window.location.href = 'login.html?redirect=' + encodeURIComponent('/prophetic/pending.html');
+      return;
+    }
+
+    const res = await fetch(
+      `https://ergfvcminlpolxyirhff.supabase.co/rest/v1/profiles?id=eq.${session.user.id}&select=status`,
+      { headers: { apikey: 'sb_publishable_NCTFg53pQ4EC0I1vb0IasQ_Cu85Y3qC', Authorization: `Bearer ${session.access_token}` } }
+    );
+    const rows = await res.json();
+    const status = rows && rows[0] ? rows[0].status : 'pending';
+
+    if (status === 'approved') {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    if (status === 'rejected') {
+      titleEl.textContent = 'Access Not Granted';
+      textEl.textContent = "Your request for Prophetic School access wasn't approved. If you think this is a mistake, please reach out to the church office directly.";
+    } else {
+      titleEl.textContent = 'Awaiting Approval';
+      textEl.textContent = "Thanks for signing up — your account is waiting for a church admin to approve access before Prophetic School content unlocks. Check back soon.";
+    }
+  }
+
+  checkStatus().catch((err) => {
+    titleEl.textContent = 'Something went wrong';
+    textEl.textContent = err.message || 'Could not check your access status.';
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await client.auth.signOut();
+    window.location.href = '../login.html';
+  });
+})();
+</script>
+</body>
+</html>
