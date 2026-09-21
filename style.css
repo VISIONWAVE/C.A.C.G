@@ -685,6 +685,19 @@ p { color: var(--color-ink-soft); }
   margin-bottom: 6px;
 }
 
+.mission-list {
+  list-style: disc;
+  padding-left: 20px;
+}
+
+.mission-list li {
+  margin-bottom: 6px;
+}
+
+.mission-list li:last-child {
+  margin-bottom: 0;
+}
+
 @media (min-width: 900px) {
   .about-preview .container,
   .about-full .container {
