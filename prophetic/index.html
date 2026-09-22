@@ -3,121 +3,336 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prophetic School | Christ Alone Prayer Mountain (Internal)</title>
+<title>Content Admin | Christ Alone Christian Group and Prophetic Ministry (Internal)</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" type="image/x-icon" href="../images/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
 <link rel="stylesheet" href="../style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  .internal-nav {
-    background: var(--color-navy-dark);
-    padding: 16px 0;
-  }
-  .internal-nav .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .internal-nav-links {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .internal-nav-links a {
-    color: rgba(255,255,255,0.75);
-    padding: 8px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 0.88rem;
-    font-weight: 600;
-  }
-  .internal-nav-links a:hover, .internal-nav-links a.active {
-    background: rgba(255,255,255,0.1);
-    color: var(--color-gold);
-  }
-  .internal-brand {
-    color: var(--color-white);
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-  }
+  .admin-nav { background: var(--color-navy-dark); padding: 16px 0; }
+  .admin-nav .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .admin-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .admin-tabs button { color: rgba(255,255,255,0.75); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600; }
+  .admin-tabs button:hover, .admin-tabs button.active { background: rgba(255,255,255,0.1); color: var(--color-gold); }
+  .admin-brand { color: var(--color-white); font-family: var(--font-display); font-size: 1.05rem; }
+  .admin-panel { display: none; }
+  .admin-panel.active { display: block; }
+  .admin-form-card { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 32px; }
+  .admin-list-item { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .admin-list-item .info h4 { font-family: var(--font-body); font-size: 1rem; color: var(--color-navy); margin-bottom: 4px; }
+  .admin-list-item .info p { font-size: 0.85rem; margin: 0; }
+  .admin-list-item .actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .admin-toggle-label { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: var(--color-ink-soft); }
+  .admin-delete-btn { color: var(--color-error); font-size: 0.82rem; font-weight: 600; padding: 6px 12px; border: 1px solid var(--color-error); border-radius: 999px; }
+  .admin-delete-btn:hover { background: var(--color-error); color: var(--color-white); }
+  .admin-status { font-size: 0.85rem; margin-top: 10px; display: none; }
+  .admin-status.is-visible { display: block; }
+  .admin-status.success { color: var(--color-success); }
+  .admin-status.error { color: var(--color-error); }
+  .admin-empty { color: var(--color-ink-soft); font-size: 0.9rem; padding: 20px; text-align: center; }
 </style>
 </head>
 <body>
 
-<!-- Internal mini-site nav — separate from the public site's navbar -->
-<nav class="internal-nav">
+<nav class="admin-nav">
   <div class="container">
-    <span class="internal-brand">Prophetic School &middot; Internal</span>
-    <div class="internal-nav-links">
-      <a href="index.html" class="active">Home</a>
-      <a href="classes.html">Classes</a>
-      <a href="resources.html">Resources</a>
-      <a href="#" id="logoutBtn">Log Out</a>
+    <span class="admin-brand">Content Admin &middot; Internal</span>
+    <div class="admin-tabs">
+      <button data-tab="sermons" class="active">Sermons</button>
+      <button data-tab="events">Events</button>
+      <button data-tab="ministries">Ministries</button>
+      <button data-tab="settings">Settings</button>
+      <button id="logoutBtn">Log Out</button>
     </div>
   </div>
 </nav>
 
 <header class="page-header" style="padding:56px 0 40px;">
   <div class="container">
-    <p class="eyebrow">Welcome</p>
-    <h1 style="font-size:2.2rem;">Prophetic School</h1>
-    <p>Training material, schedules, and resources for the Prophetic School — teachers and leaders only.</p>
+    <p class="eyebrow">Developer Access</p>
+    <h1 style="font-size:2.2rem;">Content Admin Dashboard</h1>
+    <p>Add, edit, publish, or remove content shown on the live website.</p>
   </div>
 </header>
 
 <section class="section">
   <div class="container">
-    <div class="beliefs-grid">
-      <a href="classes.html" style="text-decoration:none;">
-        <div class="belief-card">
-          <p class="num">01</p>
-          <h3>Class Schedule</h3>
-          <p>See this term's classes, topics, and timing.</p>
-        </div>
-      </a>
-      <a href="resources.html" style="text-decoration:none;">
-        <div class="belief-card">
-          <p class="num">02</p>
-          <h3>Materials &amp; Resources</h3>
-          <p>Class notes, recommended reading, and recordings.</p>
-        </div>
-      </a>
-      <div class="belief-card">
-        <p class="num">03</p>
-        <h3>About This Section</h3>
-        <p>This is an internal area, not linked publicly, and requires login to view. Only share access with authorized teachers and leaders.</p>
+
+    <!-- SERMONS -->
+    <div class="admin-panel active" id="panel-sermons">
+      <div class="admin-form-card">
+        <h3 style="margin-bottom:18px;">Add New Sermon</h3>
+        <form id="form-sermons">
+          <div class="form-group"><label>Title</label><input type="text" name="title" required></div>
+          <div class="form-group"><label>Date</label><input type="date" name="sermon_date"></div>
+          <div class="form-group"><label>Speaker</label><input type="text" name="speaker"></div>
+          <div class="form-group">
+            <label>Category</label>
+            <select name="category" style="width:100%; padding:13px 16px; border:1px solid var(--color-border); border-radius:var(--radius-sm); background:var(--color-bg);">
+              <option value="Faith">Faith</option>
+              <option value="Family">Family</option>
+              <option value="Purpose">Purpose</option>
+              <option value="Prayer">Prayer</option>
+            </select>
+          </div>
+          <div class="form-group"><label>YouTube Link (optional)</label><input type="text" name="youtube_link"></div>
+          <div class="form-group"><label>Audio File URL (optional — upload to Storage first, paste public link here)</label><input type="text" name="audio_file"></div>
+          <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="published"> Publish immediately</label>
+          <button type="submit" class="btn btn-primary">Add Sermon</button>
+          <p class="admin-status" id="status-sermons"></p>
+        </form>
+      </div>
+      <h3 style="margin-bottom:18px;">Existing Sermons</h3>
+      <div id="list-sermons"></div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="admin-panel" id="panel-events">
+      <div class="admin-form-card">
+        <h3 style="margin-bottom:18px;">Add New Event</h3>
+        <form id="form-events">
+          <div class="form-group"><label>Title</label><input type="text" name="title" required></div>
+          <div class="form-group"><label>Date</label><input type="date" name="event_date"></div>
+          <div class="form-group"><label>Time</label><input type="text" name="event_time" placeholder="e.g. 5-8pm daily"></div>
+          <div class="form-group"><label>Location</label><input type="text" name="location"></div>
+          <div class="form-group"><label>Description</label><textarea name="description"></textarea></div>
+          <div class="form-group"><label>Image URL (optional — upload to Storage, paste public link here)</label><input type="text" name="image_url"></div>
+          <div class="form-group"><label>Video URL (optional — YouTube link)</label><input type="text" name="video_url"></div>
+          <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="published"> Publish immediately</label>
+          <button type="submit" class="btn btn-primary">Add Event</button>
+          <p class="admin-status" id="status-events"></p>
+        </form>
+      </div>
+      <h3 style="margin-bottom:18px;">Existing Events</h3>
+      <div id="list-events"></div>
+    </div>
+
+    <!-- MINISTRIES -->
+    <div class="admin-panel" id="panel-ministries">
+      <div class="admin-form-card">
+        <h3 style="margin-bottom:18px;">Add New Ministry</h3>
+        <form id="form-ministries">
+          <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+          <div class="form-group">
+            <label>Category</label>
+            <select name="category" style="width:100%; padding:13px 16px; border:1px solid var(--color-border); border-radius:var(--radius-sm); background:var(--color-bg);">
+              <option value="Worship">Worship</option>
+              <option value="Youth">Youth</option>
+              <option value="Adults">Adults</option>
+              <option value="Prayer">Prayer</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Description</label><textarea name="description"></textarea></div>
+          <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="published"> Publish immediately</label>
+          <button type="submit" class="btn btn-primary">Add Ministry</button>
+          <p class="admin-status" id="status-ministries"></p>
+        </form>
+      </div>
+      <h3 style="margin-bottom:18px;">Existing Ministries</h3>
+      <div id="list-ministries"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="admin-panel" id="panel-settings">
+      <div class="admin-form-card">
+        <h3 style="margin-bottom:18px;">Site Settings</h3>
+        <form id="form-settings">
+          <div class="form-group"><label>Phone</label><input type="text" name="phone"></div>
+          <div class="form-group"><label>WhatsApp</label><input type="text" name="whatsapp"></div>
+          <div class="form-group"><label>Email</label><input type="text" name="email"></div>
+          <div class="form-group"><label>Address</label><input type="text" name="address"></div>
+          <div class="form-group"><label>Service Times</label><textarea name="service_times"></textarea></div>
+          <div class="form-group"><label>Bank Name</label><input type="text" name="bank_name"></div>
+          <div class="form-group"><label>Account Number</label><input type="text" name="account_number"></div>
+          <div class="form-group"><label>Account Name</label><input type="text" name="account_name"></div>
+          <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="anniversary_enabled"> Anniversary banner enabled</label>
+          <div class="form-group"><label>Anniversary Theme</label><input type="text" name="anniversary_theme"></div>
+          <div class="form-group"><label>Anniversary Verse</label><input type="text" name="anniversary_verse"></div>
+          <div class="form-group"><label>Anniversary Date (e.g. 2026-07-25T10:00:00)</label><input type="text" name="anniversary_date"></div>
+          <div class="form-group"><label>Anniversary Details</label><textarea name="anniversary_details"></textarea></div>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+          <p class="admin-status" id="status-settings"></p>
+        </form>
       </div>
     </div>
+
   </div>
 </section>
 
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-bottom">
-      <p>&copy; 2026 Christ Apostolic Church, Christ Alone Prayer Mountain. Internal page — not for public distribution.</p>
-    </div>
-  </div>
-</footer>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../auth-shared.js"></script>
 <script>
-  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      const client = cacgCreateAuthClient();
-      await client.auth.signOut();
-    } catch (err) {
-      console.warn('Sign-out request failed, clearing local state anyway.', err);
-    }
-    window.location.href = '../login.html';
+  // ---- TAB SWITCHING ----
+  document.querySelectorAll('.admin-tabs button[data-tab]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tabs button[data-tab]').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.admin-panel').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.getAttribute('data-tab')).classList.add('active');
+    });
   });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch('/api/admin-logout', { method: 'POST' });
+    window.location.href = '../index.html';
+  });
+
+  // ---- SHARED HELPERS ----
+  async function adminCall(table, action, payload) {
+    const res = await fetch('/api/admin/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ table, action, ...payload }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Something went wrong');
+    return json;
+  }
+
+  function showStatus(tableName, message, isError) {
+    const el = document.getElementById('status-' + tableName);
+    el.textContent = message;
+    el.className = 'admin-status is-visible ' + (isError ? 'error' : 'success');
+    setTimeout(() => el.classList.remove('is-visible'), 4000);
+  }
+
+  function formDataToObject(form) {
+    const obj = {};
+    new FormData(form).forEach((value, key) => { obj[key] = value; });
+    // checkboxes that are unchecked don't appear in FormData at all — fix that
+    form.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      obj[cb.name] = cb.checked;
+    });
+    return obj;
+  }
+
+  // ---- SERMONS / EVENTS / MINISTRIES: shared add + list + toggle + delete ----
+  function setupContentTab(tableName, renderItem) {
+    const form = document.getElementById('form-' + tableName);
+    const listEl = document.getElementById('list-' + tableName);
+
+    async function refreshList() {
+      try {
+        const { rows } = await adminCall(tableName, 'list', {});
+        if (!rows || rows.length === 0) {
+          listEl.innerHTML = '<p class="admin-empty">Nothing added yet.</p>';
+          return;
+        }
+        listEl.innerHTML = rows.map(renderItem).join('');
+
+        listEl.querySelectorAll('[data-toggle-id]').forEach((el) => {
+          el.addEventListener('change', async () => {
+            try {
+              await adminCall(tableName, 'update', { id: el.getAttribute('data-toggle-id'), data: { published: el.checked } });
+              showStatus(tableName, 'Updated.', false);
+            } catch (err) {
+              showStatus(tableName, err.message, true);
+            }
+          });
+        });
+
+        listEl.querySelectorAll('[data-delete-id]').forEach((el) => {
+          el.addEventListener('click', async () => {
+            if (!confirm('Delete this permanently?')) return;
+            try {
+              await adminCall(tableName, 'delete', { id: el.getAttribute('data-delete-id') });
+              refreshList();
+            } catch (err) {
+              showStatus(tableName, err.message, true);
+            }
+          });
+        });
+      } catch (err) {
+        listEl.innerHTML = `<p class="admin-empty">Could not load: ${err.message}</p>`;
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = formDataToObject(form);
+      try {
+        await adminCall(tableName, 'insert', { data });
+        showStatus(tableName, 'Added successfully.', false);
+        form.reset();
+        refreshList();
+      } catch (err) {
+        showStatus(tableName, err.message, true);
+      }
+    });
+
+    refreshList();
+  }
+
+  setupContentTab('sermons', (row) => `
+    <div class="admin-list-item">
+      <div class="info">
+        <h4>${row.title || 'Untitled'}</h4>
+        <p>${row.speaker || ''} &middot; ${row.category || ''} &middot; ${row.sermon_date || ''}</p>
+      </div>
+      <div class="actions">
+        <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+        <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
+      </div>
+    </div>
+  `);
+
+  setupContentTab('events', (row) => `
+    <div class="admin-list-item">
+      <div class="info">
+        <h4>${row.title || 'Untitled'}</h4>
+        <p>${row.event_date || ''} ${row.event_time || ''} &middot; ${row.location || ''}</p>
+      </div>
+      <div class="actions">
+        <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+        <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
+      </div>
+    </div>
+  `);
+
+  setupContentTab('ministries', (row) => `
+    <div class="admin-list-item">
+      <div class="info">
+        <h4>${row.name || 'Untitled'}</h4>
+        <p>${row.category || ''}</p>
+      </div>
+      <div class="actions">
+        <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+        <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
+      </div>
+    </div>
+  `);
+
+  // ---- SETTINGS: load current values, save on submit ----
+  const settingsForm = document.getElementById('form-settings');
+
+  async function loadSettings() {
+    try {
+      const { rows } = await adminCall('settings', 'list', {});
+      const row = rows && rows[0];
+      if (!row) return;
+      Object.keys(row).forEach((key) => {
+        const field = settingsForm.elements.namedItem(key);
+        if (!field) return;
+        if (field.type === 'checkbox') field.checked = !!row[key];
+        else field.value = row[key] || '';
+      });
+    } catch (err) {
+      showStatus('settings', 'Could not load current settings: ' + err.message, true);
+    }
+  }
+
+  settingsForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = formDataToObject(settingsForm);
+    try {
+      await adminCall('settings', 'update', { data });
+      showStatus('settings', 'Settings saved.', false);
+    } catch (err) {
+      showStatus('settings', err.message, true);
+    }
+  });
+
+  loadSettings();
 </script>
 </body>
 </html>
