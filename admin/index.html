@@ -42,6 +42,7 @@
       <button data-tab="sermons" class="active">Sermons</button>
       <button data-tab="events">Events</button>
       <button data-tab="ministries">Ministries</button>
+      <button data-tab="programs">Previous Programs</button>
       <button data-tab="appointments">Appointments</button>
       <button data-tab="members">Members</button>
       <button data-tab="prayer">Prayer Requests</button>
@@ -135,6 +136,24 @@
       </div>
       <h3 style="margin-bottom:18px;">Existing Ministries</h3>
       <div id="list-ministries"></div>
+    </div>
+
+    <!-- PREVIOUS PROGRAMS (homepage "A Look Back" gallery — no code needed to update) -->
+    <div class="admin-panel" id="panel-programs">
+      <div class="admin-form-card">
+        <h3 style="margin-bottom:18px;">Add Program Flyer</h3>
+        <form id="form-programs">
+          <div class="form-group"><label>Title (e.g. "The Hinds Feet — August Edition")</label><input type="text" name="title" required></div>
+          <div class="form-group"><label>Subtitle (e.g. "2-Day Special Prophetic Encounter · Aug 30 – Sept 1, 2026")</label><input type="text" name="subtitle"></div>
+          <div class="form-group"><label>Flyer Image URL</label><input type="text" name="image_url" placeholder="images/your-flyer.jpg" required></div>
+          <div class="form-group"><label>Order (lower numbers show first)</label><input type="number" name="sort_order" value="0"></div>
+          <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="published"> Show on homepage</label>
+          <button type="submit" class="btn btn-primary">Add Program</button>
+          <p class="admin-status" id="status-programs"></p>
+        </form>
+      </div>
+      <h3 style="margin-bottom:18px;">Existing Programs</h3>
+      <div id="list-programs"></div>
     </div>
 
     <!-- APPOINTMENTS (status/notes only — request itself is set by the member) -->
@@ -355,6 +374,22 @@
       <div class="info">
         <h4>${row.name || 'Untitled'}</h4>
         <p>${row.category || ''}</p>
+      </div>
+      <div class="actions">
+        <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+        <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
+      </div>
+    </div>
+  `);
+
+  setupContentTab('programs', (row) => `
+    <div class="admin-list-item">
+      <div class="info" style="display:flex; align-items:center; gap:12px;">
+        ${row.image_url ? `<img src="${row.image_url}" alt="" style="width:52px; height:52px; object-fit:cover; border-radius:var(--radius-sm);">` : ''}
+        <div>
+          <h4>${row.title || 'Untitled'}</h4>
+          <p>${row.subtitle || ''} &middot; order ${row.sort_order ?? 0}</p>
+        </div>
       </div>
       <div class="actions">
         <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>

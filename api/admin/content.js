@@ -1,7 +1,7 @@
 /**
  * /api/admin/content — controlled CMS writes for C.A.C.G. Global.
- *
- * Settings now include editable homepage identity/vision fields.
+ * Extended to cover appointments, members, prayer_requests, blog_posts,
+ * recordings — and every insert/update/delete now writes an audit_log row.
  */
 
 import crypto from 'crypto';
@@ -20,6 +20,32 @@ const ALLOWED_TABLES = {
 
   ministries: [
     'name', 'category', 'description', 'published'
+  ],
+
+  recordings: [
+    'title', 'description', 'video_url', 'session_date', 'published'
+  ],
+
+  programs: [
+    'title', 'subtitle', 'image_url', 'sort_order', 'published'
+  ],
+
+  members: [
+    'name', 'photo_url', 'ministry', 'bio', 'published'
+  ],
+
+  blog_posts: [
+    'title', 'slug', 'body', 'author', 'published'
+  ],
+
+  appointments: [
+    // Admin can only move status/notes forward — never rewrite whose
+    // appointment it is or what they originally requested.
+    'status', 'admin_notes'
+  ],
+
+  prayer_requests: [
+    'status'
   ],
 
   settings: [
@@ -52,12 +78,16 @@ function verifySignature(payload, signatureHex, secret) {
   return expected === signatureHex;
 }
 
-function isValidAdminSession(req) {
+function getAdminSessionCookie(req) {
   const cookieHeader = req.headers.cookie || '';
   const match = cookieHeader.match(/(?:^|;\s*)cacg_admin_session=([^;]+)/);
-  if (!match) return false;
+  return match ? decodeURIComponent(match[1]) : null;
+}
 
-  const cookieValue = decodeURIComponent(match[1]);
+function isValidAdminSession(req) {
+  const cookieValue = getAdminSessionCookie(req);
+  if (!cookieValue) return false;
+
   const parts = cookieValue.split('.');
   if (parts.length !== 2) return false;
 
@@ -70,6 +100,21 @@ function isValidAdminSession(req) {
   if (!Number.isFinite(expiry) || expiry <= Date.now()) return false;
 
   return verifySignature(expiryStr, signature, secret);
+}
+
+async function writeAuditLog(supabase, { action, table, id, details }) {
+  try {
+    await supabase.from('audit_log').insert({
+      actor_email: 'admin-dashboard', // single shared admin login has no per-user identity
+      action,
+      table_name: table,
+      row_id: id != null ? String(id) : null,
+      details: details || null
+    });
+  } catch (err) {
+    // Never let audit-log failure break the real operation.
+    console.error('audit_log write failed:', err.message);
+  }
 }
 
 export default async function handler(req, res) {
@@ -125,6 +170,8 @@ export default async function handler(req, res) {
 
       if (error) throw error;
 
+      await writeAuditLog(supabase, { action: 'insert', table, id: row.id, details: cleanData });
+
       return res.status(200).json({
         success: true,
         row
@@ -141,6 +188,8 @@ export default async function handler(req, res) {
           .single();
 
         if (error) throw error;
+
+        await writeAuditLog(supabase, { action: 'update', table, id: 1, details: cleanData });
 
         return res.status(200).json({
           success: true,
@@ -163,6 +212,8 @@ export default async function handler(req, res) {
 
       if (error) throw error;
 
+      await writeAuditLog(supabase, { action: 'update', table, id, details: cleanData });
+
       return res.status(200).json({
         success: true,
         row
@@ -182,6 +233,8 @@ export default async function handler(req, res) {
         .eq('id', id);
 
       if (error) throw error;
+
+      await writeAuditLog(supabase, { action: 'delete', table, id, details: null });
 
       return res.status(200).json({
         success: true

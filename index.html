@@ -127,7 +127,7 @@
     <div class="about-text">
       <p class="eyebrow">Who We Are</p>
       <h2>A family built on grace, growing in purpose.</h2>
-      <p>Since our founding in 2024, Christ Alone Christian Group and Prophetic Ministry (C.A.C.G.) has been a spiritual home for individuals and families in Ilaro, Ogun State — offering sound biblical teaching, fervent prayer, and warm community.</p>
+      <p>Since our founding in 2018, Christ Alone Christian Group and Prophetic Ministry (C.A.C.G.) has been a spiritual home for individuals and families in Ilaro, Ogun State — offering sound biblical teaching, fervent prayer, and warm community.</p>
       <p>Led by Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu), we exist to help people encounter God, discover their purpose, and live it out with courage.</p>
       <a href="about.html" class="btn btn-navy">Learn Our Story</a>
     </div>
@@ -144,49 +144,16 @@
   </div>
 </section>
 
-<!-- PREVIOUS PROGRAMS SECTION -->
+<!-- PREVIOUS PROGRAMS SECTION (dynamic — pulled from Supabase "programs" table,
+     managed from the admin dashboard under "Previous Programs", no code edits needed) -->
 <section class="section" id="previous-programs">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow">A Look Back</p>
       <h2>Previous Programs</h2>
     </div>
-    <div class="programs-grid">
-      <div class="program-card">
-        <img src="images/program-ebenezer-2025.jpg" alt="Ebenezer 2025 — Celebrating C.A.C.G. 7 Years Anniversary, theme Rehoboth">
-        <div class="program-card-body">
-          <h3>Ebenezer 2025</h3>
-          <p>Our 7th Year Anniversary &middot; Theme: Rehoboth &middot; November 2025</p>
-        </div>
-      </div>
-      <div class="program-card">
-        <img src="images/program-fire-congress.jpg" alt="Extraordinary Fire Congress 2026, May Edition, theme Missions Mandates Miracles">
-        <div class="program-card-body">
-          <h3>Extraordinary Fire Congress</h3>
-          <p>Theme: Missions, Mandates, Miracles &middot; May 2026</p>
-        </div>
-      </div>
-      <div class="program-card">
-        <img src="images/program-hinds-feet.jpg" alt="2 Days Special Prophetic Encounter, theme The Hinds Feet">
-        <div class="program-card-body">
-          <h3>The Hinds Feet</h3>
-          <p>2-Day Special Prophetic Encounter &middot; August/September 2026</p>
-        </div>
-      </div>
-      <div class="program-card">
-        <img src="images/program-building-capacity.jpg" alt="Extraordinary Night with the Holy Ghost, June Special Edition, theme Building Capacity">
-        <div class="program-card-body">
-          <h3>Building Capacity</h3>
-          <p>Extraordinary Night with the Holy Ghost &middot; June 2026</p>
-        </div>
-      </div>
-      <div class="program-card">
-        <img src="images/program-extraordinary-night-august.jpg" alt="Extraordinary Night with the Holy Ghost, August Edition, theme In the Days of His Power">
-        <div class="program-card-body">
-          <h3>In the Days of His Power</h3>
-          <p>Extraordinary Night with the Holy Ghost &middot; August 2026</p>
-        </div>
-      </div>
+    <div class="programs-grid" id="programsGrid">
+      <p style="opacity:.6;">Loading programs&hellip;</p>
     </div>
   </div>
 </section>
@@ -371,8 +338,8 @@
     <div class="testimony-slider">
       <div class="testimony-track" id="testimonyTrack">
         <div class="testimony-slide">
-          <p class="quote">"Christ Alone Christian Group and Prophetic Ministry didn't just give me a church to attend — it gave me a family that walked with me through the hardest season of my life."</p>
-          <p class="author">Ifeoma A.</p>
+          <p class="quote">"I want to appreciate God in the life of our father in the Lord, Prophet Olusegun Oladeji. Ever since I joined his ministry I have seen the mighty hand of God in my life, education and my spiritual growth. I can boldly say that this is not who I was 5 years ago. I have seen the Lord's goodness, mercies and favour in his ministry. Thank you daddy for your guidance in my path of destiny, more grace and anointing sir. May God Almighty continue to bless you abundantly sir."</p>
+          <p class="author">Opeyemi Babatunde</p>
         </div>
         <div class="testimony-slide">
           <p class="quote">"The teaching here is practical and deep at the same time. I've grown more in two years than in the previous ten."</p>
@@ -710,6 +677,45 @@
     testimonyTrack.closest('.testimony-slider').addEventListener('mouseenter', () => clearInterval(testimonyTimer));
     testimonyTrack.closest('.testimony-slider').addEventListener('mouseleave', startTestimonyAutoplay);
   }
+
+  /* 13. PREVIOUS PROGRAMS: loaded from Supabase "programs" table.
+        Add/remove/reorder flyers from the admin dashboard — no code
+        changes needed. Only rows with "published" checked show here. */
+  (async () => {
+    const grid = document.getElementById('programsGrid');
+    if (!grid) return;
+    try {
+      const client = window.supabase.createClient(
+        'https://ergfvcminlpolxyirhff.supabase.co',
+        'sb_publishable_NCTFg53pQ4EC0I1vb0IasQ_Cu85Y3qC'
+      );
+      const { data: rows, error } = await client
+        .from('programs')
+        .select('*')
+        .eq('published', true)
+        .order('sort_order', { ascending: true });
+
+      if (error) throw error;
+
+      if (!rows || rows.length === 0) {
+        grid.innerHTML = '<p style="opacity:.6;">No programs published yet.</p>';
+        return;
+      }
+
+      grid.innerHTML = rows.map((row) => `
+        <div class="program-card">
+          <img src="${row.image_url || 'images/pastor.jpg'}" alt="${(row.title || 'Program').replace(/"/g, '&quot;')}">
+          <div class="program-card-body">
+            <h3>${row.title || ''}</h3>
+            <p>${row.subtitle || ''}</p>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error('Could not load programs:', err);
+      grid.innerHTML = '<p style="opacity:.6;">Programs are temporarily unavailable.</p>';
+    }
+  })();
 </script>
 </body>
 </html>
