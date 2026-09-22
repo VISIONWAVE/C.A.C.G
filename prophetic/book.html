@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Session | Prophetic School (Internal)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+<link rel="stylesheet" href="../style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .internal-nav { background: var(--color-navy-dark); padding: 16px 0; }
+  .internal-nav .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .internal-nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+  .internal-nav-links a { color: rgba(255,255,255,0.75); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600; }
+  .internal-nav-links a:hover, .internal-nav-links a.active { background: rgba(255,255,255,0.1); color: var(--color-gold); }
+  .internal-brand { color: var(--color-white); font-family: var(--font-display); font-size: 1.05rem; }
+  .status-pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:.78rem; font-weight:600; }
+  .status-pending { background:#fff7ed; color:#9a3412; }
+  .status-confirmed { background:#f0fdf4; color:#166534; }
+  .status-cancelled, .status-completed { background:#f4f5f7; color:#6b7280; }
+  .msg { display:none; border-radius:8px; padding:10px 12px; margin-bottom:15px; font-size:.85rem; }
+  .msg.show { display:block; }
+  .msg.error { background:#fff1f2; color:#9f1239; border:1px solid #fecdd3; }
+  .msg.success { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+</style>
+</head>
+<body>
+
+<nav class="internal-nav">
+  <div class="container">
+    <span class="internal-brand">Prophetic School &middot; Internal</span>
+    <div class="internal-nav-links">
+      <a href="index.html">Home</a>
+      <a href="classes.html">Classes</a>
+      <a href="book.html" class="active">Book a Session</a>
+      <a href="resources.html">Resources</a>
+      <a href="#" id="logoutBtn">Log Out</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header" style="padding:56px 0 40px;">
+  <div class="container">
+    <p class="eyebrow">1-on-1</p>
+    <h1 style="font-size:2.2rem;">Book a Prophetic Session</h1>
+    <p>Request a one-on-one appointment. A leader will confirm the time with you.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container" style="max-width:640px;">
+    <div id="msg" class="msg" role="alert"></div>
+
+    <form id="bookForm" class="admin-form-card" style="background:var(--color-white); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:28px; margin-bottom:32px;">
+      <div class="form-group"><label>Preferred Date</label><input type="date" id="requested_date" required></div>
+      <div class="form-group"><label>Preferred Time</label><input type="text" id="requested_time" placeholder="e.g. 4:00 PM" required></div>
+      <div class="form-group"><label>Topic (optional)</label><input type="text" id="topic" placeholder="What would you like to talk about?"></div>
+      <div class="form-group"><label>Notes (optional)</label><textarea id="notes"></textarea></div>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Request Appointment</button>
+    </form>
+
+    <h3 style="margin-bottom:18px;">Your Requests</h3>
+    <div id="list"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>&copy; 2026 Christ Alone Christian Group and Prophetic Ministry. Internal page — not for public distribution.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../auth-shared.js"></script>
+<script>
+(() => {
+  const msgEl = document.getElementById('msg');
+  const listEl = document.getElementById('list');
+  const form = document.getElementById('bookForm');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function message(text, type) {
+    msgEl.textContent = text;
+    msgEl.className = 'msg show ' + type;
+  }
+
+  let client;
+  try {
+    client = cacgCreateAuthClient();
+  } catch (err) {
+    message("Couldn't connect: " + err.message, 'error');
+    return;
+  }
+
+  async function authedFetch(url, options = {}) {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) { window.location.href = 'login.html?redirect=' + encodeURIComponent('/prophetic/book.html'); return; }
+    const headers = Object.assign({}, options.headers, {
+      Authorization: 'Bearer ' + session.access_token,
+      'Content-Type': 'application/json'
+    });
+    return fetch(url, Object.assign({}, options, { headers }));
+  }
+
+  function renderList(rows) {
+    if (!rows || rows.length === 0) {
+      listEl.innerHTML = '<p class="admin-empty">No requests yet.</p>';
+      return;
+    }
+    listEl.innerHTML = rows.map((r) => `
+      <div class="admin-list-item" style="background:var(--color-white); border:1px solid var(--color-border); border-radius:var(--radius-md); padding:16px 18px; margin-bottom:12px;">
+        <div class="info">
+          <h4 style="margin-bottom:4px;">${r.requested_date || ''} &middot; ${r.requested_time || ''}</h4>
+          <p style="margin:0; font-size:.85rem;">${r.topic || 'No topic given'}</p>
+        </div>
+        <span class="status-pill status-${r.status}">${r.status}</span>
+      </div>
+    `).join('');
+  }
+
+  async function loadMine() {
+    try {
+      const res = await authedFetch('/api/my-appointment', { method: 'GET' });
+      if (!res) return;
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Could not load your requests.');
+      renderList(json.rows);
+    } catch (err) {
+      listEl.innerHTML = `<p class="admin-empty">${err.message}</p>`;
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    try {
+      const res = await authedFetch('/api/book-appointment', {
+        method: 'POST',
+        body: JSON.stringify({
+          requested_date: document.getElementById('requested_date').value,
+          requested_time: document.getElementById('requested_time').value,
+          topic: document.getElementById('topic').value,
+          notes: document.getElementById('notes').value
+        })
+      });
+      if (!res) return;
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Could not book the appointment.');
+      message('Request sent — a leader will confirm your time.', 'success');
+      form.reset();
+      loadMine();
+    } catch (err) {
+      message(err.message, 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Request Appointment';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try { await client.auth.signOut(); } catch (_) {}
+    window.location.href = '../login.html';
+  });
+
+  loadMine();
+})();
+</script>
+</body>
+</html>
