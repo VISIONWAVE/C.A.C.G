@@ -2,10 +2,15 @@
  * /api/admin/content — controlled CMS writes for C.A.C.G. Global.
  * Extended to cover appointments, members, prayer_requests, blog_posts,
  * recordings — and every insert/update/delete now writes an audit_log row.
+ *
+ * NEW: whenever an admin changes an appointment's status to confirmed,
+ * cancelled, or rescheduled, and that row has a valid contact email,
+ * the visitor is emailed automatically via Gmail.
  */
 
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
+import nodemailer from 'nodemailer';
 
 const ALLOWED_TABLES = {
   sermons: [
@@ -68,6 +73,68 @@ const ALLOWED_TABLES = {
     'anniversary_details'
   ]
 };
+
+// --- Gmail transport, shared with api/notify.js's env vars -----------------
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
+
+function isValidEmail(value) {
+  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+const STATUS_EMAIL_SUBJECTS = {
+  confirmed: 'Your visit is confirmed!',
+  cancelled: 'Update on your visit request',
+  rescheduled: 'Your visit date has been updated',
+};
+
+function statusEmailBody(row) {
+  const name = row.name && String(row.name).trim() ? String(row.name).trim() : 'there';
+  const dateStr = row.requested_date
+    ? new Date(`${row.requested_date}T00:00:00`).toLocaleDateString('en-GB', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      })
+    : 'your requested date';
+  const notesLine = row.admin_notes ? `\n\nNote from the team: ${row.admin_notes}` : '';
+
+  if (row.status === 'confirmed') {
+    return `Hi ${name},\n\nGood news — your visit for ${dateStr} is confirmed! We can't wait to welcome you.\n\nService details:\n- Sunday School: 8am\n- Glorious Service: 9am\n\nLocation: Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State${notesLine}\n\nSee you soon,\nC.A.C.G. Family`;
+  }
+  if (row.status === 'cancelled') {
+    return `Hi ${name},\n\nYour visit request for ${dateStr} has been cancelled.${notesLine}\n\nIf this doesn't seem right, or you'd like to plan a new visit, just reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
+  }
+  if (row.status === 'rescheduled') {
+    return `Hi ${name},\n\nYour visit request has previously been for ${dateStr}, but it's been rescheduled.${notesLine}\n\nIf you have any questions, reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
+  }
+  return null; // e.g. status === 'pending' — nothing to send
+}
+
+async function maybeSendAppointmentStatusEmail(row) {
+  if (!row || !isValidEmail(row.contact)) return; // e.g. Prophetic Classes bookings have no contact field
+  const subject = STATUS_EMAIL_SUBJECTS[row.status];
+  const body = statusEmailBody(row);
+  if (!subject || !body) return;
+
+  try {
+    await transporter.sendMail({
+      from: `"Christ Alone Christian Group and Prophetic Ministry" <${process.env.GMAIL_USER}>`,
+      to: String(row.contact).trim(),
+      subject,
+      text: body,
+    });
+  } catch (err) {
+    // Don't fail the admin's status update just because the email didn't send.
+    console.error('appointment status email failed:', err.message);
+  }
+}
+
+// --- Auth + audit log (unchanged) -------------------------------------------
 
 function verifySignature(payload, signatureHex, secret) {
   const expected = crypto
@@ -213,6 +280,10 @@ export default async function handler(req, res) {
       if (error) throw error;
 
       await writeAuditLog(supabase, { action: 'update', table, id, details: cleanData });
+
+      if (table === 'appointments' && cleanData.status) {
+        await maybeSendAppointmentStatusEmail(row);
+      }
 
       return res.status(200).json({
         success: true,
