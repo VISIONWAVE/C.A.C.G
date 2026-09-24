@@ -1006,8 +1006,10 @@ p { color: var(--color-ink-soft); }
 
 .spotlight-slide img {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  object-position: center;
+  background: var(--color-navy, #0a0f1e);
   display: block;
 }
 
@@ -1081,11 +1083,19 @@ p { color: var(--color-ink-soft); }
   border-radius: 999px;
 }
 
+@media (min-width: 480px) {
+  .spotlight-slide img { aspect-ratio: 4 / 3; }
+}
+
 @media (min-width: 700px) {
-  .spotlight-slide img { aspect-ratio: 21 / 9; }
+  .spotlight-slide img { aspect-ratio: 16 / 9; }
   .spotlight-caption { padding: 60px 40px 28px; }
   .spotlight-caption h3 { font-size: 1.4rem; }
   .spotlight-caption p { font-size: 0.95rem; }
+}
+
+@media (min-width: 1400px) {
+  .spotlight-slider { max-width: 1400px; margin: 0 auto; }
 }
 
 .programs-grid {
