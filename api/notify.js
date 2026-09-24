@@ -1,9 +1,11 @@
 // api/notify.js
-// Handles POST /api/notify — sends the "New Plan a Visit" notification
-// emails. The booking itself is already saved directly to Supabase by the
-// client (see the Plan a Visit form in index.html, which inserts into the
-// `appointments` table with status "pending"). This endpoint only sends
-// email — it does not write to the database.
+// Handles POST /api/notify — sends email notifications for two separate
+// public forms:
+//   type: "visit"   — Plan a Visit modal (booking itself is saved directly
+//                      to Supabase by the client; this endpoint only emails)
+//   type: "contact"  — Contact page form (this endpoint both forwards the
+//                      message to the church and confirms receipt to the
+//                      sender — there is no database row for these)
 
 import nodemailer from 'nodemailer';
 
@@ -15,22 +17,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const churchNotifyTo = () => process.env.NOTIFY_TO_EMAIL || process.env.GMAIL_USER;
 
-  const { type, name, email, date, page } = req.body || {};
-
-  if (type !== 'visit') {
-    return res.status(400).json({ error: 'Unsupported notification type' });
-  }
+async function handleVisit(body, res) {
+  const { name, email, date, page } = body;
 
   const trimmedName = typeof name === 'string' ? name.trim() : '';
   const trimmedEmail = typeof email === 'string' ? email.trim() : '';
   const trimmedDate = typeof date === 'string' ? date.trim() : '';
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (trimmedName.length < 2 || !emailPattern.test(trimmedEmail) || !trimmedDate) {
     return res.status(400).json({ error: 'Missing or invalid fields' });
@@ -43,12 +38,10 @@ export default async function handler(req, res) {
     year: 'numeric',
   });
 
-  const churchNotifyTo = process.env.NOTIFY_TO_EMAIL || process.env.GMAIL_USER;
-
   const emailJobs = [
     transporter.sendMail({
       from: `"C.A.C.G. Website" <${process.env.GMAIL_USER}>`,
-      to: churchNotifyTo,
+      to: churchNotifyTo(),
       subject: `New Plan a Visit: ${trimmedName} — ${formattedDate}`,
       text: `${trimmedName} plans to visit on ${formattedDate}.\n\nEmail: ${trimmedEmail}\nSubmitted from: ${page || 'unknown page'}\n\nStatus starts as "pending" — update it from the admin dashboard's Visits tab.`,
     }),
@@ -67,4 +60,54 @@ export default async function handler(req, res) {
   }
 
   return res.status(200).json({ ok: true, emailSent: !emailFailed });
+}
+
+async function handleContact(body, res) {
+  const { name, email, message, page } = body;
+
+  const trimmedName = typeof name === 'string' ? name.trim() : '';
+  const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+  const trimmedMessage = typeof message === 'string' ? message.trim() : '';
+
+  if (trimmedName.length < 2 || !emailPattern.test(trimmedEmail) || trimmedMessage.length < 10) {
+    return res.status(400).json({ error: 'Missing or invalid fields' });
+  }
+
+  const emailJobs = [
+    transporter.sendMail({
+      from: `"C.A.C.G. Website" <${process.env.GMAIL_USER}>`,
+      to: churchNotifyTo(),
+      replyTo: trimmedEmail,
+      subject: `New Contact Form message from ${trimmedName}`,
+      text: `${trimmedName} sent a message via the Contact page.\n\nEmail: ${trimmedEmail}\nSubmitted from: ${page || 'unknown page'}\n\nMessage:\n${trimmedMessage}`,
+    }),
+    transporter.sendMail({
+      from: `"Christ Alone Christian Group and Prophetic Ministry" <${process.env.GMAIL_USER}>`,
+      to: trimmedEmail,
+      subject: `We received your message`,
+      text: `Hi ${trimmedName},\n\nThanks for reaching out — we've received your message and will get back to you within 48 hours.\n\nYour message:\n${trimmedMessage}\n\nIf it's urgent, call or WhatsApp our prayer line: +234 906 364 6231.\n\nC.A.C.G. Family`,
+    }),
+  ];
+
+  const results = await Promise.allSettled(emailJobs);
+  const emailFailed = results.some((r) => r.status === 'rejected');
+  if (emailFailed) {
+    console.error('One or more contact emails failed to send:', results);
+  }
+
+  return res.status(200).json({ ok: true, emailSent: !emailFailed });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const body = req.body || {};
+
+  if (body.type === 'visit') return handleVisit(body, res);
+  if (body.type === 'contact') return handleContact(body, res);
+
+  return res.status(400).json({ error: 'Unsupported notification type' });
 }
