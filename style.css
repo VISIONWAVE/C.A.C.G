@@ -982,6 +982,112 @@ p { color: var(--color-ink-soft); }
   grid-template-columns: 1fr;
 }
 
+.spotlight-section {
+  padding-top: 0;
+}
+
+.spotlight-slider {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md, var(--shadow-sm));
+}
+
+.spotlight-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.spotlight-slide {
+  position: relative;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+.spotlight-slide img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.spotlight-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 40px 24px 20px;
+  background: linear-gradient(to top, rgba(10, 15, 30, 0.85), transparent);
+  color: var(--color-white);
+}
+
+.spotlight-caption h3 {
+  color: var(--color-white);
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.spotlight-caption p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+}
+
+.spotlight-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-navy);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.spotlight-arrow:hover {
+  background: var(--color-white);
+}
+
+.spotlight-prev { left: 14px; }
+.spotlight-next { right: 14px; }
+
+.spotlight-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spotlight-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0;
+  border: none;
+}
+
+.spotlight-dot.is-active {
+  background: var(--color-white);
+  width: 22px;
+  border-radius: 999px;
+}
+
+@media (min-width: 700px) {
+  .spotlight-slide img { aspect-ratio: 21 / 9; }
+  .spotlight-caption { padding: 60px 40px 28px; }
+  .spotlight-caption h3 { font-size: 1.4rem; }
+  .spotlight-caption p { font-size: 0.95rem; }
+}
+
 .programs-grid {
   display: grid;
   gap: 24px;

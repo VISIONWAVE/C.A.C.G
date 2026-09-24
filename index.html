@@ -129,34 +129,79 @@
       <h2>A family built on grace, growing in purpose.</h2>
       <p>Since our founding in 2018, Christ Alone Christian Group and Prophetic Ministry (C.A.C.G.) has been a spiritual home for individuals and families in Ilaro, Ogun State — offering sound biblical teaching, fervent prayer, and warm community.</p>
       <p>Led by Prophet Olusegun Oladeji (H.O.J. Idunnu Jesu), we exist to help people encounter God, discover their purpose, and live it out with courage.</p>
+      <p>Through discipleship, prayer, fellowship, mentorship, and practical Christian living, we raise a generation of purpose-driven, Christ-centered, kingdom-minded youths and young adults who influence their campuses and communities for Christ. We are a mission field and training ground for destiny, equipping young people to live out their faith boldly, excel in their calling, and become agents of godly transformation wherever God has placed them.</p>
+      <p>Our mission is to raise extraordinary youths and young adults who are passionately on fire for God, rooted in His Word, and empowered by the Holy Spirit — helping them discover their God-given purpose, develop their gifts, and walk confidently in His will. Our desire is to see every young person know God, be fire-branded, and become a light that points others to Christ.</p>
       <a href="about.html" class="btn btn-navy">Learn Our Story</a>
     </div>
   </div>
 </section>
 
-<!-- ANNIVERSARY BANNER SECTION -->
+<!-- COMING UP SLIDER SECTION -->
 <section class="anniversary-banner">
   <div class="container">
-    <p class="eyebrow">8th Year Anniversary</p>
-    <h2 data-cacg="anniversary-theme">Save the Date &mdash; November 2026</h2>
-    <p data-cacg="anniversary-details">We're celebrating 8 years of God's faithfulness this November. Exact dates and theme to be announced &mdash; watch this space.</p>
-    <a href="contact.html" class="btn btn-primary">Get Notified</a>
+    <p class="eyebrow">Coming Up</p>
+    <h2 data-cacg="anniversary-theme">8th Year Anniversary &mdash; November 2026</h2>
+    <p data-cacg="anniversary-details">We're celebrating 8 years of God's faithfulness this November. Exact dates and theme to be announced &mdash; for now, here's a look at recent programs.</p>
   </div>
 </section>
 
-<!-- PREVIOUS PROGRAMS SECTION (dynamic — pulled from Supabase "programs" table,
-     managed from the admin dashboard under "Previous Programs", no code edits needed) -->
-<section class="section" id="previous-programs">
+<section class="section spotlight-section">
   <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">A Look Back</p>
-      <h2>Previous Programs</h2>
-    </div>
-    <div class="programs-grid" id="programsGrid">
-      <p style="opacity:.6;">Loading programs&hellip;</p>
+    <div class="spotlight-slider" id="spotlightSlider">
+      <div class="spotlight-track" id="spotlightTrack">
+        <!-- Fallback slides (shown until/unless live data loads from the
+             admin dashboard's "Coming Up" tab — same pattern as every
+             other section on this site: keep working content if the
+             fetch fails, never show a blank gap). -->
+        <div class="spotlight-slide">
+          <img src="images/program-ebenezer-2025.jpg" alt="Ebenezer 2025 — Celebrating C.A.C.G. 7 Years Anniversary, theme Rehoboth">
+          <div class="spotlight-caption">
+            <h3>Ebenezer 2025</h3>
+            <p>Our 7th Year Anniversary &middot; Theme: Rehoboth &middot; November 2025</p>
+          </div>
+        </div>
+        <div class="spotlight-slide">
+          <img src="images/program-fire-congress.jpg" alt="Extraordinary Fire Congress 2026, May Edition, theme Missions Mandates Miracles">
+          <div class="spotlight-caption">
+            <h3>Extraordinary Fire Congress</h3>
+            <p>Theme: Missions, Mandates, Miracles &middot; May 2026</p>
+          </div>
+        </div>
+        <div class="spotlight-slide">
+          <img src="images/program-hinds-feet.jpg" alt="2 Days Special Prophetic Encounter, theme The Hinds Feet">
+          <div class="spotlight-caption">
+            <h3>The Hinds Feet</h3>
+            <p>2-Day Special Prophetic Encounter &middot; August/September 2026</p>
+          </div>
+        </div>
+        <div class="spotlight-slide">
+          <img src="images/program-building-capacity.jpg" alt="Extraordinary Night with the Holy Ghost, June Special Edition, theme Building Capacity">
+          <div class="spotlight-caption">
+            <h3>Building Capacity</h3>
+            <p>Extraordinary Night with the Holy Ghost &middot; June 2026</p>
+          </div>
+        </div>
+        <div class="spotlight-slide">
+          <img src="images/program-extraordinary-night-august.jpg" alt="Extraordinary Night with the Holy Ghost, August Edition, theme In the Days of His Power">
+          <div class="spotlight-caption">
+            <h3>In the Days of His Power</h3>
+            <p>Extraordinary Night with the Holy Ghost &middot; August 2026</p>
+          </div>
+        </div>
+      </div>
+      <button class="spotlight-arrow spotlight-prev" id="spotlightPrev" aria-label="Previous slide">&#8249;</button>
+      <button class="spotlight-arrow spotlight-next" id="spotlightNext" aria-label="Next slide">&#8250;</button>
+      <div class="spotlight-dots" id="spotlightDots">
+        <button class="spotlight-dot is-active" data-slide="0" aria-label="Go to slide 1"></button>
+        <button class="spotlight-dot" data-slide="1" aria-label="Go to slide 2"></button>
+        <button class="spotlight-dot" data-slide="2" aria-label="Go to slide 3"></button>
+        <button class="spotlight-dot" data-slide="3" aria-label="Go to slide 4"></button>
+        <button class="spotlight-dot" data-slide="4" aria-label="Go to slide 5"></button>
+      </div>
     </div>
   </div>
 </section>
+
 
 <!-- LATEST SERMON SECTION -->
 <section class="latest-sermon section">
@@ -338,16 +383,12 @@
     <div class="testimony-slider">
       <div class="testimony-track" id="testimonyTrack">
         <div class="testimony-slide">
-          <p class="quote">"I want to appreciate God in the life of our father in the Lord, Prophet Olusegun Oladeji. Ever since I joined his ministry I have seen the mighty hand of God in my life, education and my spiritual growth. I can boldly say that this is not who I was 5 years ago. I have seen the Lord's goodness, mercies and favour in his ministry. Thank you daddy for your guidance in my path of destiny, more grace and anointing sir. May God Almighty continue to bless you abundantly sir."</p>
-          <p class="author">Opeyemi Babatunde</p>
+          <p class="quote">"I want to appreciate God in the life of our father in the Lord, Prophet Olusegun Oladeji. Ever since I joined his ministry I have seen the mighty hand of God in my life, education and my spiritual growth. I can boldly say that this is not who I was 5 years ago. I have seen the Lord's goodness, mercies and favour in this ministry. Thank you daddy for your guidance in my path of destiny, more grace and anointing sir. May God Almighty continue to bless you abundantly sir."</p>
+          <p class="author">Elizebeth Ifeoluwa Alabi</p>
         </div>
         <div class="testimony-slide">
-          <p class="quote">"The teaching here is practical and deep at the same time. I've grown more in two years than in the previous ten."</p>
-          <p class="author">Emeka O.</p>
-        </div>
-        <div class="testimony-slide">
-          <p class="quote">"Kids Harbor made Sunday mornings something my children actually look forward to. That says a lot."</p>
-          <p class="author">Blessing N.</p>
+          <p class="quote">"I bless the God of CACG Global, who transformed my life and perfected my journey. I was a man full of worries about what the future holds for me, bothered about almost all aspects of my life, but today I can boldly say that in CACG I found God and He perfected all that has to do with my life. Today I have clear directions and am settled in all areas of life. Praise God!"</p>
+          <p class="author">Ayodeji Onigbogi</p>
         </div>
       </div>
       <div class="testimony-dots" id="testimonyDots"></div>
@@ -414,6 +455,10 @@
         <label for="visitDate">Which Sunday?</label>
         <input type="date" id="visitDate" name="visitDate" required>
         <span class="form-error">Please choose a date.</span>
+      </div>
+      <div class="form-group" id="visitMessageGroup">
+        <label for="visitMessage">Anything we should know? (optional)</label>
+        <textarea id="visitMessage" name="visitMessage" rows="2" placeholder="e.g. bringing 2 kids, first-timer, need directions"></textarea>
       </div>
       <button type="submit" class="btn btn-primary" style="width:100%;">Confirm Visit</button>
     </form>
@@ -512,6 +557,56 @@
      window.cacgStartCountdown, to wire it back up automatically via the
      Settings table. */
 
+  /* 4.5. "COMING UP" SPOTLIGHT SLIDER — manageable from the admin
+     dashboard's "Coming Up" tab, no code needed. Works on both the
+     static fallback slides already in the HTML and on live slides
+     content.js swaps in from Supabase — cacgInitSpotlightSlider() is
+     called again after content.js re-renders the track, since the
+     slide count may have changed. */
+  function cacgInitSpotlightSlider() {
+    const track = document.getElementById('spotlightTrack');
+    const dotsWrap = document.getElementById('spotlightDots');
+    const prevBtn = document.getElementById('spotlightPrev');
+    const nextBtn = document.getElementById('spotlightNext');
+    if (!track) return;
+
+    const slides = track.querySelectorAll('.spotlight-slide');
+    if (slides.length === 0) return;
+
+    let current = 0;
+    let autoTimer;
+
+    function goTo(index) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      if (dotsWrap) {
+        dotsWrap.querySelectorAll('.spotlight-dot').forEach((dot, i) => {
+          dot.classList.toggle('is-active', i === current);
+        });
+      }
+    }
+
+    function startAuto() {
+      clearInterval(autoTimer);
+      if (slides.length > 1) {
+        autoTimer = setInterval(() => goTo(current + 1), 6000);
+      }
+    }
+
+    if (prevBtn) prevBtn.onclick = () => { goTo(current - 1); startAuto(); };
+    if (nextBtn) nextBtn.onclick = () => { goTo(current + 1); startAuto(); };
+    if (dotsWrap) {
+      dotsWrap.querySelectorAll('.spotlight-dot').forEach((dot) => {
+        dot.onclick = () => { goTo(Number(dot.getAttribute('data-slide'))); startAuto(); };
+      });
+    }
+
+    goTo(0);
+    startAuto();
+  }
+  window.cacgInitSpotlightSlider = cacgInitSpotlightSlider;
+  cacgInitSpotlightSlider(); // run once immediately for the static fallback slides
+
   /* 5. PROGRESS BAR ANIMATION on scroll (church project) */
   const progressFill = document.getElementById('projectProgress');
   const percentLabel = document.getElementById('projectPercentLabel');
@@ -573,6 +668,31 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
 
+    const message = document.getElementById('visitMessage').value.trim();
+
+    // Save the actual booking record — this is what makes it visible in
+    // the admin dashboard's "Visits" tab later. Uses the same lazily-
+    // created Supabase client content.js already set up (cacgSupabase),
+    // rather than making a second one — see content.js's top-of-file
+    // comment for why it's safe/expected to be null if the CDN script
+    // hasn't loaded (private browsing blockers, slow connection, etc.).
+    // A failure here should never block the WhatsApp notification below —
+    // that's still a real, working way for the request to reach someone.
+    try {
+      if (typeof cacgSupabase !== 'undefined' && cacgSupabase) {
+        const { error } = await cacgSupabase.from('appointments').insert([{
+          name: name.value.trim(),
+          contact: email.value.trim(),
+          requested_date: date.value.trim(),
+          message: message || null,
+          status: 'pending',
+        }]);
+        if (error) console.warn('Could not save visit request to appointments table:', error);
+      }
+    } catch (err) {
+      console.warn('Could not save visit request to appointments table:', err);
+    }
+
     try {
       await fetch('/api/notify', {
         method: 'POST',
@@ -582,6 +702,7 @@
           name: name.value.trim(),
           email: email.value.trim(),
           date: date.value.trim(),
+          message: message,
           page: window.location.pathname
         })
       });
@@ -677,45 +798,6 @@
     testimonyTrack.closest('.testimony-slider').addEventListener('mouseenter', () => clearInterval(testimonyTimer));
     testimonyTrack.closest('.testimony-slider').addEventListener('mouseleave', startTestimonyAutoplay);
   }
-
-  /* 13. PREVIOUS PROGRAMS: loaded from Supabase "programs" table.
-        Add/remove/reorder flyers from the admin dashboard — no code
-        changes needed. Only rows with "published" checked show here. */
-  (async () => {
-    const grid = document.getElementById('programsGrid');
-    if (!grid) return;
-    try {
-      const client = window.supabase.createClient(
-        'https://ergfvcminlpolxyirhff.supabase.co',
-        'sb_publishable_NCTFg53pQ4EC0I1vb0IasQ_Cu85Y3qC'
-      );
-      const { data: rows, error } = await client
-        .from('programs')
-        .select('*')
-        .eq('published', true)
-        .order('sort_order', { ascending: true });
-
-      if (error) throw error;
-
-      if (!rows || rows.length === 0) {
-        grid.innerHTML = '<p style="opacity:.6;">No programs published yet.</p>';
-        return;
-      }
-
-      grid.innerHTML = rows.map((row) => `
-        <div class="program-card">
-          <img src="${row.image_url || 'images/pastor.jpg'}" alt="${(row.title || 'Program').replace(/"/g, '&quot;')}">
-          <div class="program-card-body">
-            <h3>${row.title || ''}</h3>
-            <p>${row.subtitle || ''}</p>
-          </div>
-        </div>
-      `).join('');
-    } catch (err) {
-      console.error('Could not load programs:', err);
-      grid.innerHTML = '<p style="opacity:.6;">Programs are temporarily unavailable.</p>';
-    }
-  })();
 </script>
 </body>
 </html>
