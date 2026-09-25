@@ -91,6 +91,7 @@ function isValidEmail(value) {
 const STATUS_EMAIL_SUBJECTS = {
   confirmed: 'Your visit is confirmed!',
   cancelled: 'Update on your visit request',
+  declined: 'Update on your visit request',
   rescheduled: 'Your visit date has been updated',
 };
 
@@ -107,8 +108,8 @@ function statusEmailBody(row) {
   if (status === 'confirmed') {
     return `Hi ${name},\n\nGood news — your visit for ${dateStr} is confirmed! We can't wait to welcome you.\n\nService details:\n- Sunday School: 8am\n- Glorious Service: 9am\n\nLocation: Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State${notesLine}\n\nSee you soon,\nC.A.C.G. Family`;
   }
-  if (status === 'cancelled') {
-    return `Hi ${name},\n\nYour visit request for ${dateStr} has been cancelled.${notesLine}\n\nIf this doesn't seem right, or you'd like to plan a new visit, just reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
+  if (status === 'cancelled' || status === 'declined') {
+    return `Hi ${name},\n\nYour visit request for ${dateStr} has been declined.${notesLine}\n\nIf this doesn't seem right, or you'd like to plan a new visit, just reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
   }
   if (status === 'rescheduled') {
     return `Hi ${name},\n\nYour visit request has previously been for ${dateStr}, but it's been rescheduled.${notesLine}\n\nIf you have any questions, reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
