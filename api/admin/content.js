@@ -95,6 +95,7 @@ const STATUS_EMAIL_SUBJECTS = {
 };
 
 function statusEmailBody(row) {
+  const status = typeof row.status === 'string' ? row.status.trim().toLowerCase() : '';
   const name = row.name && String(row.name).trim() ? String(row.name).trim() : 'there';
   const dateStr = row.requested_date
     ? new Date(`${row.requested_date}T00:00:00`).toLocaleDateString('en-GB', {
@@ -103,23 +104,34 @@ function statusEmailBody(row) {
     : 'your requested date';
   const notesLine = row.admin_notes ? `\n\nNote from the team: ${row.admin_notes}` : '';
 
-  if (row.status === 'confirmed') {
+  if (status === 'confirmed') {
     return `Hi ${name},\n\nGood news — your visit for ${dateStr} is confirmed! We can't wait to welcome you.\n\nService details:\n- Sunday School: 8am\n- Glorious Service: 9am\n\nLocation: Opp Poly Third Gate, Irepodun CDA Area, Sarumi, Ilaro, Ogun State${notesLine}\n\nSee you soon,\nC.A.C.G. Family`;
   }
-  if (row.status === 'cancelled') {
+  if (status === 'cancelled') {
     return `Hi ${name},\n\nYour visit request for ${dateStr} has been cancelled.${notesLine}\n\nIf this doesn't seem right, or you'd like to plan a new visit, just reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
   }
-  if (row.status === 'rescheduled') {
+  if (status === 'rescheduled') {
     return `Hi ${name},\n\nYour visit request has previously been for ${dateStr}, but it's been rescheduled.${notesLine}\n\nIf you have any questions, reply to this email or call us on +234 906 364 6231.\n\nC.A.C.G. Family`;
   }
   return null; // e.g. status === 'pending' — nothing to send
 }
 
 async function maybeSendAppointmentStatusEmail(row) {
-  if (!row || !isValidEmail(row.contact)) return; // e.g. Prophetic Classes bookings have no contact field
-  const subject = STATUS_EMAIL_SUBJECTS[row.status];
+  if (!row) {
+    console.log('appointment status email skipped: no row returned from update');
+    return;
+  }
+  if (!isValidEmail(row.contact)) {
+    console.log(`appointment status email skipped: contact "${row.contact}" is not a valid email (id ${row.id})`);
+    return; // e.g. Prophetic Classes bookings have no contact field
+  }
+  const status = typeof row.status === 'string' ? row.status.trim().toLowerCase() : '';
+  const subject = STATUS_EMAIL_SUBJECTS[status];
   const body = statusEmailBody(row);
-  if (!subject || !body) return;
+  if (!subject || !body) {
+    console.log(`appointment status email skipped: status "${row.status}" has no matching email (id ${row.id})`);
+    return;
+  }
 
   try {
     await transporter.sendMail({
