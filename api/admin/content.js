@@ -35,6 +35,10 @@ const ALLOWED_TABLES = {
     'title', 'subtitle', 'image_url', 'sort_order', 'published'
   ],
 
+  spotlight_slides: [
+    'title', 'caption', 'image_url', 'display_order', 'published'
+  ],
+
   members: [
     'name', 'photo_url', 'ministry', 'bio', 'published'
   ],
