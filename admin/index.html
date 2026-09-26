@@ -355,7 +355,7 @@
   function setupAppointmentsTab() {
     const listEl = document.getElementById('list-appointments');
 
-    const STATUS_COLORS = { pending: 'var(--color-gold-deep)', confirmed: 'var(--color-success)', declined: 'var(--color-error)' };
+    const STATUS_COLORS = { pending: 'var(--color-gold-deep)', confirmed: 'var(--color-success)', declined: 'var(--color-error)', rescheduled: 'var(--color-gold-deep)' };
 
     async function refreshList() {
       try {
@@ -383,6 +383,7 @@
                 <option value="pending" ${row.status === 'pending' ? 'selected' : ''}>Pending</option>
                 <option value="confirmed" ${row.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
                 <option value="declined" ${row.status === 'declined' ? 'selected' : ''}>Declined</option>
+                <option value="rescheduled" ${row.status === 'rescheduled' ? 'selected' : ''}>Rescheduled</option>
               </select>
               <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
             </div>
