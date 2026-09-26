@@ -309,7 +309,7 @@
     toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2200);
   }
   const visitForm = document.getElementById('visitForm');
-  visitForm.addEventListener('submit', (e) => {
+  visitForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     let valid = true;
     const name = document.getElementById('visitName');
@@ -324,10 +324,54 @@
       field.closest('.form-group').classList.toggle('has-error', !isValid);
       if (!isValid) valid = false;
     });
-    if (valid) {
+
+    if (!valid) return;
+
+    const submitBtn = visitForm.querySelector('button[type="submit"]');
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    // Save the actual booking record to Supabase — same approach as the
+    // homepage's Plan a Visit form, using the shared cacgSupabase client
+    // set up in content.js. A failure here should never block the email
+    // step below.
+    try {
+      if (typeof cacgSupabase !== 'undefined' && cacgSupabase) {
+        const { error } = await cacgSupabase.from('appointments').insert([{
+          name: name.value.trim(),
+          contact: email.value.trim(),
+          requested_date: date.value.trim(),
+          message: null,
+          status: 'pending',
+        }]);
+        if (error) console.warn('Could not save visit request to appointments table:', error);
+      }
+    } catch (err) {
+      console.warn('Could not save visit request to appointments table:', err);
+    }
+
+    try {
+      await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'visit',
+          name: name.value.trim(),
+          email: email.value.trim(),
+          date: date.value.trim(),
+          message: '',
+          page: window.location.pathname
+        })
+      });
       showToast("You're on the list — see you Sunday!");
       visitForm.reset();
       closeVisitModal();
+    } catch (err) {
+      showToast("Couldn't send — please try again or call us.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
     }
   });
 
