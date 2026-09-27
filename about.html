@@ -125,10 +125,11 @@
     .executive-year-tab.is-active { background: var(--color-navy, #1a2540); color: #fff; border-color: transparent; }
     .executive-department { margin-bottom: 32px; }
     .executive-department h4 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-gold-deep); margin-bottom: 14px; }
-    .executive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
+    .executive-grid { display: flex; flex-direction: column; align-items: center; gap: 28px; }
     .executive-card { text-align: center; }
-    .executive-card img, .executive-avatar-placeholder { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; }
-    .executive-avatar-placeholder { display: flex; align-items: center; justify-content: center; background: var(--color-bg-alt); font-size: 1.6rem; font-weight: 700; color: var(--color-gold-deep); }
+    .executive-photo-wrap { width: 96px; height: 96px; margin: 0 auto 10px; position: relative; }
+    .executive-card img, .executive-avatar-placeholder { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; }
+    .executive-avatar-placeholder { display: flex; align-items: center; justify-content: center; background: var(--color-bg-alt); font-size: 1.8rem; font-weight: 700; color: var(--color-gold-deep); }
     .executive-name { font-weight: 600; }
     .executive-position { font-size: 0.85rem; color: var(--color-ink-soft); }
   </style>

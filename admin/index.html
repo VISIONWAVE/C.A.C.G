@@ -366,6 +366,41 @@
     const tableName = 'executives';
     const form = document.getElementById('form-executives');
     const listEl = document.getElementById('list-executives');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    let currentRows = [];
+    let editingId = null;
+
+    function exitEditMode() {
+      editingId = null;
+      form.reset();
+      submitBtn.textContent = 'Add Executive';
+      const cancelBtn = document.getElementById('cancel-edit-executives');
+      if (cancelBtn) cancelBtn.remove();
+    }
+
+    function enterEditMode(row) {
+      editingId = row.id;
+      form.elements['name'].value = row.name || '';
+      form.elements['position'].value = row.position || '';
+      form.elements['department'].value = row.department || '';
+      form.elements['year'].value = row.year != null ? String(row.year) : '';
+      form.elements['photo_url'].value = row.photo_url || '';
+      form.elements['published'].checked = !!row.published;
+      submitBtn.textContent = 'Update Executive';
+
+      if (!document.getElementById('cancel-edit-executives')) {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.id = 'cancel-edit-executives';
+        cancelBtn.className = 'btn btn-outline';
+        cancelBtn.style.marginLeft = '10px';
+        cancelBtn.textContent = 'Cancel edit';
+        cancelBtn.addEventListener('click', exitEditMode);
+        submitBtn.insertAdjacentElement('afterend', cancelBtn);
+      }
+
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
     function renderItem(row) {
       return `
@@ -379,6 +414,7 @@
           </div>
           <div class="actions">
             <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+            <button type="button" class="btn btn-outline" data-edit-id="${row.id}" style="padding:5px 10px; font-size:0.8rem;">Edit</button>
             <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
           </div>
         </div>
@@ -388,11 +424,12 @@
     async function refreshList() {
       try {
         const { rows } = await adminCall(tableName, 'list', {});
-        if (!rows || rows.length === 0) {
+        currentRows = rows || [];
+        if (currentRows.length === 0) {
           listEl.innerHTML = '<p class="admin-empty">Nothing added yet.</p>';
           return;
         }
-        listEl.innerHTML = rows.map(renderItem).join('');
+        listEl.innerHTML = currentRows.map(renderItem).join('');
 
         listEl.querySelectorAll('[data-toggle-id]').forEach((el) => {
           el.addEventListener('change', async () => {
@@ -405,11 +442,19 @@
           });
         });
 
+        listEl.querySelectorAll('[data-edit-id]').forEach((el) => {
+          el.addEventListener('click', () => {
+            const row = currentRows.find((r) => String(r.id) === el.getAttribute('data-edit-id'));
+            if (row) enterEditMode(row);
+          });
+        });
+
         listEl.querySelectorAll('[data-delete-id]').forEach((el) => {
           el.addEventListener('click', async () => {
             if (!confirm('Delete this permanently?')) return;
             try {
               await adminCall(tableName, 'delete', { id: el.getAttribute('data-delete-id') });
+              if (editingId === el.getAttribute('data-delete-id')) exitEditMode();
               refreshList();
             } catch (err) {
               showStatus(tableName, err.message, true);
@@ -425,7 +470,27 @@
       e.preventDefault();
       const raw = formDataToObject(form);
 
-      // Split "2024, 2025, 2026" (or just "2026") into individual years.
+      // EDIT MODE: updating one existing row — a single year value, no
+      // comma-splitting (that's only for adding fresh entries across
+      // several years at once).
+      if (editingId != null) {
+        const year = Number(String(raw.year || '').split(',')[0].trim());
+        if (!Number.isInteger(year) || year < 1900 || year > 2100) {
+          showStatus(tableName, 'Please enter a valid year.', true);
+          return;
+        }
+        try {
+          await adminCall(tableName, 'update', { id: editingId, data: { ...raw, year } });
+          showStatus(tableName, 'Updated successfully.', false);
+          exitEditMode();
+          refreshList();
+        } catch (err) {
+          showStatus(tableName, err.message, true);
+        }
+        return;
+      }
+
+      // ADD MODE: split "2024, 2025, 2026" (or just "2026") into individual years.
       const years = String(raw.year || '')
         .split(',')
         .map((y) => y.trim())

@@ -341,9 +341,12 @@ function cacgRenderExecutives(executives) {
         const name = cacgEscapeHtml(ex.name || 'Untitled');
         const position = cacgEscapeHtml(ex.position || '');
         const photoUrl = cacgSafeUrl(ex.photo_url);
+        const initial = name.charAt(0).toUpperCase();
         return `
           <div class="executive-card">
-            ${photoUrl ? `<img src="${cacgEscapeAttr(photoUrl)}" alt="${cacgEscapeAttr(ex.name || '')}" loading="lazy">` : `<div class="executive-avatar-placeholder">${name.charAt(0)}</div>`}
+            <div class="executive-photo-wrap">
+              ${photoUrl ? `<img src="${cacgEscapeAttr(photoUrl)}" alt="${cacgEscapeAttr(ex.name || '')}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="executive-avatar-placeholder" style="display:none;">${initial}</div>` : `<div class="executive-avatar-placeholder">${initial}</div>`}
+            </div>
             <div class="executive-name">${name}</div>
             ${position ? `<div class="executive-position">${position}</div>` : ''}
           </div>
