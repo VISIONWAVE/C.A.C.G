@@ -148,7 +148,7 @@
           <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
           <div class="form-group"><label>Position</label><input type="text" name="position" placeholder="e.g. Choir Director"></div>
           <div class="form-group"><label>Department</label><input type="text" name="department" placeholder="e.g. Choir, Ushering, Media"></div>
-          <div class="form-group"><label>Year</label><input type="number" name="year" required placeholder="e.g. 2026"></div>
+          <div class="form-group"><label>Year(s)</label><input type="text" name="year" required placeholder="e.g. 2026  or  2024, 2025, 2026 for multiple years at once"></div>
           <div class="form-group"><label>Photo URL (optional)</label><input type="text" name="photo_url" placeholder="https://...supabase.co/storage/v1/object/public/program-images/..."></div>
           <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="published"> Publish immediately</label>
           <button type="submit" class="btn btn-primary">Add Executive</button>
@@ -359,21 +359,101 @@
     </div>
   `);
 
-  setupContentTab('executives', (row) => `
-    <div class="admin-list-item">
-      <div class="info" style="display:flex; gap:14px; align-items:center;">
-        ${row.photo_url ? `<img src="${row.photo_url}" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:50%; flex-shrink:0;" onerror="this.style.display='none'">` : ''}
-        <div>
-          <h4>${row.name || 'Untitled'} <span style="font-weight:400; color:var(--color-ink-soft);">&middot; ${row.year || ''}</span></h4>
-          <p>${row.position || ''} &middot; ${row.department || ''}</p>
+  // ---- EXECUTIVES: custom submit handler — same person can be added for
+  // several years in one go by typing e.g. "2024, 2025, 2026" in the Year
+  // field, instead of re-filling the whole form for each year. ----
+  function setupExecutivesTab() {
+    const tableName = 'executives';
+    const form = document.getElementById('form-executives');
+    const listEl = document.getElementById('list-executives');
+
+    function renderItem(row) {
+      return `
+        <div class="admin-list-item">
+          <div class="info" style="display:flex; gap:14px; align-items:center;">
+            ${row.photo_url ? `<img src="${row.photo_url}" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:50%; flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+            <div>
+              <h4>${row.name || 'Untitled'} <span style="font-weight:400; color:var(--color-ink-soft);">&middot; ${row.year || ''}</span></h4>
+              <p>${row.position || ''} &middot; ${row.department || ''}</p>
+            </div>
+          </div>
+          <div class="actions">
+            <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+            <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
+          </div>
         </div>
-      </div>
-      <div class="actions">
-        <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
-        <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
-      </div>
-    </div>
-  `);
+      `;
+    }
+
+    async function refreshList() {
+      try {
+        const { rows } = await adminCall(tableName, 'list', {});
+        if (!rows || rows.length === 0) {
+          listEl.innerHTML = '<p class="admin-empty">Nothing added yet.</p>';
+          return;
+        }
+        listEl.innerHTML = rows.map(renderItem).join('');
+
+        listEl.querySelectorAll('[data-toggle-id]').forEach((el) => {
+          el.addEventListener('change', async () => {
+            try {
+              await adminCall(tableName, 'update', { id: el.getAttribute('data-toggle-id'), data: { published: el.checked } });
+              showStatus(tableName, 'Updated.', false);
+            } catch (err) {
+              showStatus(tableName, err.message, true);
+            }
+          });
+        });
+
+        listEl.querySelectorAll('[data-delete-id]').forEach((el) => {
+          el.addEventListener('click', async () => {
+            if (!confirm('Delete this permanently?')) return;
+            try {
+              await adminCall(tableName, 'delete', { id: el.getAttribute('data-delete-id') });
+              refreshList();
+            } catch (err) {
+              showStatus(tableName, err.message, true);
+            }
+          });
+        });
+      } catch (err) {
+        listEl.innerHTML = `<p class="admin-empty">Could not load: ${err.message}</p>`;
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const raw = formDataToObject(form);
+
+      // Split "2024, 2025, 2026" (or just "2026") into individual years.
+      const years = String(raw.year || '')
+        .split(',')
+        .map((y) => y.trim())
+        .filter(Boolean)
+        .map((y) => Number(y));
+
+      const invalid = years.some((y) => !Number.isInteger(y) || y < 1900 || y > 2100);
+      if (years.length === 0 || invalid) {
+        showStatus(tableName, 'Please enter a valid year, or multiple years separated by commas (e.g. 2024, 2025).', true);
+        return;
+      }
+
+      try {
+        for (const year of years) {
+          await adminCall(tableName, 'insert', { data: { ...raw, year } });
+        }
+        showStatus(tableName, years.length > 1 ? `Added for ${years.length} years.` : 'Added successfully.', false);
+        form.reset();
+        refreshList();
+      } catch (err) {
+        showStatus(tableName, err.message, true);
+      }
+    });
+
+    refreshList();
+  }
+
+  setupExecutivesTab();
 
   setupContentTab('spotlight_slides', (row) => `
     <div class="admin-list-item">
