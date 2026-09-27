@@ -45,6 +45,10 @@ const ALLOWED_TABLES = {
     'name', 'photo_url', 'ministry', 'bio', 'published'
   ],
 
+  executives: [
+    'name', 'position', 'department', 'year', 'photo_url', 'published'
+  ],
+
   blog_posts: [
     'title', 'slug', 'body', 'author', 'published'
   ],

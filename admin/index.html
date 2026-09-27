@@ -42,6 +42,7 @@
       <button data-tab="sermons" class="active">Sermons</button>
       <button data-tab="events">Events</button>
       <button data-tab="ministries">Ministries</button>
+      <button data-tab="executives">Executives</button>
       <button data-tab="spotlight_slides">Coming Up</button>
       <button data-tab="appointments">Visits</button>
       <button data-tab="settings">Settings</button>
@@ -133,6 +134,29 @@
       </div>
       <h3 style="margin-bottom:18px;">Existing Ministries</h3>
       <div id="list-ministries"></div>
+    </div>
+
+    <!-- SPOTLIGHT SLIDES ("Coming Up" homepage slider) -->
+    <div class="admin-panel" id="panel-executives">
+      <div class="admin-form-card">
+        <h3 style="margin-bottom:18px;">Add New Executive</h3>
+        <p style="margin-bottom:18px; font-size:0.88rem; color:var(--color-ink-soft);">
+          These show up on the About page, grouped by year and department — so each year's
+          leadership stays on record even after new executives are added for the next year.
+        </p>
+        <form id="form-executives">
+          <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+          <div class="form-group"><label>Position</label><input type="text" name="position" placeholder="e.g. Choir Director"></div>
+          <div class="form-group"><label>Department</label><input type="text" name="department" placeholder="e.g. Choir, Ushering, Media"></div>
+          <div class="form-group"><label>Year</label><input type="number" name="year" required placeholder="e.g. 2026"></div>
+          <div class="form-group"><label>Photo URL (optional)</label><input type="text" name="photo_url" placeholder="https://...supabase.co/storage/v1/object/public/program-images/..."></div>
+          <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px;"><input type="checkbox" name="published"> Publish immediately</label>
+          <button type="submit" class="btn btn-primary">Add Executive</button>
+          <p class="admin-status" id="status-executives"></p>
+        </form>
+      </div>
+      <h3 style="margin-bottom:18px;">Existing Executives</h3>
+      <div id="list-executives"></div>
     </div>
 
     <!-- SPOTLIGHT SLIDES ("Coming Up" homepage slider) -->
@@ -327,6 +351,22 @@
       <div class="info">
         <h4>${row.name || 'Untitled'}</h4>
         <p>${row.category || ''}</p>
+      </div>
+      <div class="actions">
+        <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>
+        <button type="button" class="admin-delete-btn" data-delete-id="${row.id}">Delete</button>
+      </div>
+    </div>
+  `);
+
+  setupContentTab('executives', (row) => `
+    <div class="admin-list-item">
+      <div class="info" style="display:flex; gap:14px; align-items:center;">
+        ${row.photo_url ? `<img src="${row.photo_url}" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:50%; flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+        <div>
+          <h4>${row.name || 'Untitled'} <span style="font-weight:400; color:var(--color-ink-soft);">&middot; ${row.year || ''}</span></h4>
+          <p>${row.position || ''} &middot; ${row.department || ''}</p>
+        </div>
       </div>
       <div class="actions">
         <label class="admin-toggle-label"><input type="checkbox" data-toggle-id="${row.id}" ${row.published ? 'checked' : ''}> Published</label>

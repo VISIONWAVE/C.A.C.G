@@ -315,18 +315,87 @@ function cacgRenderSpotlightSlides(slides) {
   }
 }
 
+/** Renders department executives on the About page, grouped by year
+ *  (newest first) then by department — so past years' leadership stays
+ *  visible in its own section even after a new year's team is added. */
+function cacgRenderExecutives(executives) {
+  const container = document.getElementById('executivesContainer');
+  if (!container || !executives || executives.length === 0) return; // keep fallback content if nothing published yet
+
+  const byYear = {};
+  executives.forEach((ex) => {
+    const year = ex.year || 'Unknown';
+    if (!byYear[year]) byYear[year] = {};
+    const dept = ex.department || 'General';
+    if (!byYear[year][dept]) byYear[year][dept] = [];
+    byYear[year][dept].push(ex);
+  });
+
+  const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
+
+  container.innerHTML = years.map((year, i) => {
+    const depts = byYear[year];
+    const deptNames = Object.keys(depts).sort();
+    const deptsHtml = deptNames.map((dept) => {
+      const peopleHtml = depts[dept].map((ex) => {
+        const name = cacgEscapeHtml(ex.name || 'Untitled');
+        const position = cacgEscapeHtml(ex.position || '');
+        const photoUrl = cacgSafeUrl(ex.photo_url);
+        return `
+          <div class="executive-card">
+            ${photoUrl ? `<img src="${cacgEscapeAttr(photoUrl)}" alt="${cacgEscapeAttr(ex.name || '')}" loading="lazy">` : `<div class="executive-avatar-placeholder">${name.charAt(0)}</div>`}
+            <div class="executive-name">${name}</div>
+            ${position ? `<div class="executive-position">${position}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      return `
+        <div class="executive-department">
+          <h4>${cacgEscapeHtml(dept)}</h4>
+          <div class="executive-grid">${peopleHtml}</div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="executive-year-block" ${i === 0 ? '' : 'style="display:none;"'} data-year-block="${cacgEscapeAttr(year)}">
+        ${deptsHtml}
+      </div>
+    `;
+  }).join('');
+
+  const yearTabsWrap = document.getElementById('executivesYearTabs');
+  if (yearTabsWrap) {
+    yearTabsWrap.innerHTML = years.map((year, i) => `
+      <button class="executive-year-tab${i === 0 ? ' is-active' : ''}" data-year-tab="${cacgEscapeAttr(year)}">${cacgEscapeHtml(year)}</button>
+    `).join('');
+
+    yearTabsWrap.querySelectorAll('[data-year-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const year = btn.getAttribute('data-year-tab');
+        yearTabsWrap.querySelectorAll('[data-year-tab]').forEach((b) => b.classList.toggle('is-active', b === btn));
+        container.querySelectorAll('[data-year-block]').forEach((block) => {
+          block.style.display = block.getAttribute('data-year-block') === year ? '' : 'none';
+        });
+      });
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const needsSermons = !!document.getElementById('sermonsGrid');
   const needsEvents = !!document.getElementById('eventsGrid');
   const needsMinistries = !!document.getElementById('ministriesGrid');
   const needsSpotlight = !!document.getElementById('spotlightTrack');
+  const needsExecutives = !!document.getElementById('executivesContainer');
 
-  const [settingsResult, sermonsResult, eventsResult, ministriesResult, spotlightResult] = await Promise.allSettled([
+  const [settingsResult, sermonsResult, eventsResult, ministriesResult, spotlightResult, executivesResult] = await Promise.allSettled([
     cacgFetchTable('settings'),
     needsSermons ? cacgFetchTable('sermons') : Promise.resolve(null),
     needsEvents ? cacgFetchTable('events') : Promise.resolve(null),
     needsMinistries ? cacgFetchTable('ministries') : Promise.resolve(null),
     needsSpotlight ? cacgFetchTable('spotlight_slides') : Promise.resolve(null),
+    needsExecutives ? cacgFetchTable('executives') : Promise.resolve(null),
   ]);
 
   try {
@@ -357,5 +426,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (needsSpotlight && spotlightResult.status === 'fulfilled') cacgRenderSpotlightSlides(spotlightResult.value);
   } catch (err) {
     console.warn('CACG content: Spotlight slides failed to render, keeping fallback content.', err);
+  }
+
+  try {
+    if (needsExecutives && executivesResult.status === 'fulfilled') cacgRenderExecutives(executivesResult.value);
+  } catch (err) {
+    console.warn('CACG content: Executives failed to render, keeping fallback content.', err);
   }
 });
