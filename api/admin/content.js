@@ -247,7 +247,13 @@ export default async function handler(req, res) {
   if (data) {
     for (const key of allowedColumns) {
       if (Object.prototype.hasOwnProperty.call(data, key)) {
-        cleanData[key] = data[key];
+        // An empty string is a valid "clear this field" intent for text
+        // columns, but Postgres rejects it outright for date/timestamp
+        // columns (e.g. anniversary_date left blank) with a hard error
+        // that blocks the entire save — including unrelated fields in
+        // the same request, like service_times. Treating "" as null
+        // fixes that for every column type without any downside.
+        cleanData[key] = data[key] === '' ? null : data[key];
       }
     }
   }
