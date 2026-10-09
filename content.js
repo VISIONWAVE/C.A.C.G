@@ -222,6 +222,28 @@ function cacgRenderSermons(sermons) {
   }
 }
 
+/** Turns a YouTube link (watch?v=, youtu.be/, or an existing /embed/ link)
+ *  into a privacy-enhanced embed URL on youtube-nocookie.com — this avoids
+ *  the "consent.youtube.com refused to connect" block some visitors hit
+ *  with the regular youtube.com embed domain, especially with ad/privacy
+ *  blockers enabled. Returns the original URL unchanged if it doesn't look
+ *  like a recognizable YouTube link, so non-YouTube video_url values still
+ *  work as before. */
+function cacgYoutubeEmbedUrl(url) {
+  if (!url) return url;
+  const patterns = [
+    /youtube\.com\/watch\?v=([\w-]+)/,
+    /youtube\.com\/embed\/([\w-]+)/,
+    /youtu\.be\/([\w-]+)/,
+    /youtube-nocookie\.com\/embed\/([\w-]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return `https://www.youtube-nocookie.com/embed/${match[1]}`;
+  }
+  return url; // not a recognized YouTube link — leave as-is
+}
+
 function cacgRenderEvents(events) {
   const grid = document.getElementById('eventsGrid');
   if (!grid || !events || events.length === 0) return; // keep fallback content if nothing published yet
@@ -238,7 +260,7 @@ function cacgRenderEvents(events) {
     const videoUrl = cacgSafeUrl(ev.video_url);
     const imageUrl = cacgSafeUrl(ev.image_url);
     const mediaHtml = videoUrl
-      ? `<div class="event-media"><iframe loading="lazy" src="${cacgEscapeAttr(videoUrl.replace('watch?v=', 'embed/'))}" title="${titleAttr}" allowfullscreen></iframe></div>`
+      ? `<div class="event-media"><iframe loading="lazy" src="${cacgEscapeAttr(cacgYoutubeEmbedUrl(videoUrl))}" title="${titleAttr}" allowfullscreen></iframe></div>`
       : imageUrl
         ? `<div class="event-media"><img src="${cacgEscapeAttr(imageUrl)}" alt="${titleAttr}"></div>`
         : '';
