@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloth Orders | C.A.C.G. Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../style.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { background: var(--color-bg-alt, #f6f3ec); }
+  .orders-head { background: #14213d; color: #fff; padding: 28px 0; }
+  .orders-head h1 { margin: 0 0 6px; font-size: 1.6rem; }
+  .orders-head a { color: #e0b252; }
+  .orders-wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; }
+  .orders-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .orders-toolbar input, .orders-toolbar select { padding: 9px 12px; border: 1px solid #d8d2c4; border-radius: 8px; font: inherit; }
+  .orders-toolbar input { flex: 1; min-width: 180px; }
+  .summary { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chip { background: #fff; border: 1px solid #e5dfd2; border-radius: 999px; padding: 6px 14px; font-size: 0.9rem; }
+  .order-row { background: #fff; border: 1px solid #e5dfd2; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: center; }
+  .order-row h4 { margin: 0 0 4px; }
+  .order-row p { margin: 2px 0; color: #555; font-size: 0.92rem; }
+  .order-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+  .order-actions select, .order-actions input { padding: 7px 10px; border: 1px solid #d8d2c4; border-radius: 8px; font: inherit; }
+  .order-actions input { width: 170px; }
+  .del { color: #b42318; border: 1px solid #b42318; background: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+  .st { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; margin-left: 6px; }
+  .st-pending { color: #b7791f; } .st-payment_claimed { color: #c05621; } .st-paid { color: #1a7f4b; } .st-delivered { color: #1d4ed8; } .st-cancelled { color: #9b1c1c; }
+  .msg { text-align: center; padding: 30px; color: #666; }
+  @media (max-width: 640px) { .order-row { grid-template-columns: 1fr; } .order-actions { justify-content: flex-start; } }
+</style>
+</head>
+<body>
+
+<div class="orders-head">
+  <div class="orders-wrap" style="margin:0 auto;">
+    <h1>Ebenezer Cloth Orders</h1>
+    <a href="index.html">&larr; Back to Admin Dashboard</a>
+  </div>
+</div>
+
+<div class="orders-wrap">
+  <div class="summary" id="summary"></div>
+
+  <div class="orders-toolbar">
+    <input type="search" id="search" placeholder="Search by name or phone...">
+    <select id="filter">
+      <option value="all">All orders</option>
+      <option value="pending">Awaiting payment</option>
+      <option value="payment_claimed">Says paid — please check bank</option>
+      <option value="paid">Paid</option>
+      <option value="delivered">Delivered</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+    <button class="btn btn-outline" id="refresh" type="button">Refresh</button>
+    <button class="btn btn-outline" id="export" type="button">Download CSV</button>
+  </div>
+
+  <div id="list"><p class="msg">Loading orders...</p></div>
+</div>
+
+<script>
+  const LABELS = {
+    pending: 'Awaiting payment',
+    payment_claimed: 'Says paid — check bank',
+    paid: 'Paid',
+    delivered: 'Delivered',
+    cancelled: 'Cancelled'
+  };
+  let allRows = [];
+
+  async function api(action, extra) {
+    const res = await fetch('/api/admin/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ action, ...extra })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401) throw new Error('LOGIN');
+    if (!res.ok) throw new Error(data.error || 'Request failed.');
+    return data;
+  }
+
+  function el(tag, attrs, text) {
+    const n = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => n.setAttribute(k, v));
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function render() {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const f = document.getElementById('filter').value;
+    const list = document.getElementById('list');
+
+    // Summary chips (always across all orders)
+    const counts = {}; let pieces = 0;
+    allRows.forEach((r) => { counts[r.status] = (counts[r.status] || 0) + 1; if (r.status !== 'cancelled') pieces += r.quantity; });
+    const summary = document.getElementById('summary');
+    summary.innerHTML = '';
+    summary.appendChild(el('span', { class: 'chip' }, `${allRows.length} orders`));
+    summary.appendChild(el('span', { class: 'chip' }, `${pieces} pieces (excl. cancelled)`));
+    Object.keys(LABELS).forEach((s) => { if (counts[s]) summary.appendChild(el('span', { class: 'chip' }, `${LABELS[s]}: ${counts[s]}`)); });
+
+    const rows = allRows.filter((r) =>
+      (f === 'all' || r.status === f) &&
+      (!q || (r.name || '').toLowerCase().includes(q) || (r.phone || '').includes(q))
+    );
+
+    list.innerHTML = '';
+    if (!rows.length) { list.appendChild(el('p', { class: 'msg' }, 'No orders to show.')); return; }
+
+    rows.forEach((r) => {
+      const row = el('div', { class: 'order-row' });
+      const info = el('div');
+      const h = el('h4', {}, `EBN-${r.id} · ${r.name}`);
+      h.appendChild(el('span', { class: `st st-${r.status}` }, LABELS[r.status] || r.status));
+      info.appendChild(h);
+      info.appendChild(el('p', {}, `${r.phone} · Qty ${r.quantity}${r.size ? ' · Size ' + r.size : ''}`));
+      info.appendChild(el('p', {}, new Date(r.created_at).toLocaleString('en-GB')));
+
+      const actions = el('div', { class: 'order-actions' });
+      const select = el('select');
+      Object.keys(LABELS).forEach((s) => {
+        const o = el('option', { value: s }, LABELS[s]);
+        if (s === r.status) o.selected = true;
+        select.appendChild(o);
+      });
+      select.addEventListener('change', async () => {
+        try { await api('update', { id: r.id, data: { status: select.value } }); await load(); }
+        catch (err) { alert(err.message); }
+      });
+
+      const note = el('input', { type: 'text', placeholder: 'Note (optional)', maxlength: '500' });
+      note.value = r.admin_notes || '';
+      note.addEventListener('change', async () => {
+        try { await api('update', { id: r.id, data: { admin_notes: note.value } }); }
+        catch (err) { alert(err.message); }
+      });
+
+      const del = el('button', { type: 'button', class: 'del' }, 'Delete');
+      del.addEventListener('click', async () => {
+        if (!confirm(`Delete order EBN-${r.id} (${r.name}) permanently?`)) return;
+        try { await api('delete', { id: r.id }); await load(); }
+        catch (err) { alert(err.message); }
+      });
+
+      actions.append(select, note, del);
+      row.append(info, actions);
+      list.appendChild(row);
+    });
+  }
+
+  async function load() {
+    try {
+      const data = await api('list');
+      allRows = data.rows || [];
+      render();
+    } catch (err) {
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      list.appendChild(el('p', { class: 'msg' },
+        err.message === 'LOGIN'
+          ? 'Please log in through the Admin Dashboard first, then come back to this page.'
+          : 'Could not load orders: ' + err.message));
+    }
+  }
+
+  function csvCell(v) {
+    let s = String(v == null ? '' : v);
+    if (/^[=+\-@]/.test(s)) s = "'" + s; // stop spreadsheet formula injection
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+
+  document.getElementById('export').addEventListener('click', () => {
+    const header = ['Order', 'Name', 'Phone', 'Quantity', 'Size', 'Status', 'Note', 'Date'];
+    const lines = [header.map(csvCell).join(',')].concat(allRows.map((r) =>
+      [`EBN-${r.id}`, r.name, r.phone, r.quantity, r.size, LABELS[r.status] || r.status, r.admin_notes, r.created_at].map(csvCell).join(',')
+    ));
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ebenezer-cloth-orders.csv';
+    a.click();
+  });
+
+  document.getElementById('search').addEventListener('input', render);
+  document.getElementById('filter').addEventListener('change', render);
+  document.getElementById('refresh').addEventListener('click', load);
+  load();
+</script>
+</body>
+</html>

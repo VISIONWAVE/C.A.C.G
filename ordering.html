@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Ebenezer 2026 Polo | Christ Alone Christian Group and Prophetic Ministry</title>
+<meta name="description" content="Order your Ebenezer 2026 anniversary polo from Christ Alone Christian Group and Prophetic Ministry.">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .order-wrap { max-width: 640px; margin: 0 auto; }
+  .order-card { background: var(--color-bg, #fff); border: 1px solid var(--color-border, #e5dfd2); border-radius: 16px; padding: 28px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }
+  .order-item { display: flex; gap: 16px; align-items: center; margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px solid var(--color-border, #e5dfd2); }
+  .order-item img { width: 110px; height: 147px; object-fit: cover; border-radius: 12px; flex-shrink: 0; }
+  .order-item h3 { margin: 0 0 4px; }
+  .order-item p { margin: 0; color: var(--color-ink-soft, #666); }
+  .order-card .form-group { margin-bottom: 16px; }
+  .order-card label { display: block; font-weight: 600; margin-bottom: 6px; }
+  .order-card input, .order-card select { width: 100%; padding: 12px 14px; border: 1px solid var(--color-border, #d8d2c4); border-radius: 10px; font: inherit; background: #fff; }
+  .order-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin: 6px 0 18px; }
+  .order-error { color: #b42318; font-size: 0.9rem; margin: 0 0 12px; min-height: 1.2em; }
+  .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .pay-steps { margin: 0 0 18px; padding-left: 20px; line-height: 1.7; }
+  .pay-box { background: var(--color-bg-alt, #f3efe6); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+  .pay-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; flex-wrap: wrap; }
+  .pay-row strong { font-size: 1.05rem; }
+  .pay-ref { text-align: center; font-size: 1.3rem; font-weight: 800; letter-spacing: 0.05em; margin: 4px 0 14px; }
+  .order-closed { text-align: center; padding: 10px 0; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">
+      <img src="images/cacg-logo.jpg" alt="C.A.C.G. logo" class="nav-logo-img">
+      C.A.C.G.
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="sermons.html">Sermons</a>
+      <a href="contact.html">Contact</a>
+      <a href="ordering.html" class="active">Order Polo</a>
+    </nav>
+    <a href="index.html" class="btn btn-primary nav-cta">Back to Home</a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu-overlay" id="mobileOverlay"></div>
+<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+  <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">&times;</button>
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="sermons.html">Sermons</a>
+  <a href="contact.html">Contact</a>
+  <a href="ordering.html" class="active">Order Polo</a>
+</nav>
+
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow">Ebenezer 2026 &middot; CACG@8</p>
+    <h1>Order Your Ebenezer 2026 Polo</h1>
+    <p>Fill in your details, make your transfer, and confirm — it takes about two minutes.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="order-wrap">
+
+      <!-- STEP 0: orders closed -->
+      <div class="order-card order-closed" id="closedPanel" hidden>
+        <h3>Orders are currently closed</h3>
+        <p>Please check back soon or contact us for help.</p>
+      </div>
+
+      <!-- STEP 1: the order form -->
+      <div class="order-card" id="formPanel">
+        <div class="order-item">
+          <img id="itemImage" src="images/ebenezer-2026-polo.jpg" alt="Ebenezer 2026 polo" onerror="this.style.display='none'">
+          <div>
+            <h3 id="itemName">Ebenezer 2026 Polo</h3>
+            <p id="itemPrice"></p>
+          </div>
+        </div>
+
+        <form id="orderForm" novalidate>
+          <div class="hp-field" aria-hidden="true">
+            <label>Leave this empty <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <div class="form-group">
+            <label for="oName">Full Name</label>
+            <input type="text" id="oName" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label for="oPhone">Phone Number</label>
+            <input type="tel" id="oPhone" autocomplete="tel" placeholder="e.g. 0906 364 6231" required>
+          </div>
+          <div class="form-group" id="sizeGroup">
+            <label for="oSize">Size</label>
+            <select id="oSize"></select>
+          </div>
+          <div class="form-group">
+            <label for="oQty">Quantity</label>
+            <input type="number" id="oQty" min="1" max="50" value="1" required>
+          </div>
+          <div class="order-total" id="totalRow" hidden><span>Total</span><span id="totalValue"></span></div>
+          <p class="order-error" id="formError" role="alert"></p>
+          <button type="submit" class="btn btn-primary" id="submitBtn" style="width:100%;">Continue to Payment</button>
+        </form>
+      </div>
+
+      <!-- STEP 2: pay by transfer, then confirm -->
+      <div class="order-card" id="payPanel" hidden>
+        <h3>Almost done — make your transfer</h3>
+        <p class="pay-ref" id="refText"></p>
+        <ol class="pay-steps">
+          <li>Transfer the amount below to the account shown.</li>
+          <li>Use your order number as the transfer narration/description.</li>
+          <li>Come back here and tap <strong>"I have made the transfer"</strong>.</li>
+        </ol>
+        <div class="pay-box">
+          <div class="pay-row"><span>Bank</span><strong id="payBank"></strong></div>
+          <div class="pay-row"><span>Account Number</span><strong id="payNumber"></strong></div>
+          <div class="pay-row"><span>Account Name</span><strong id="payName"></strong></div>
+          <div class="pay-row" id="payAmountRow" hidden><span>Amount</span><strong id="payAmount"></strong></div>
+        </div>
+        <button type="button" class="btn btn-outline" id="copyBtn" style="width:100%; margin-bottom:12px;">Copy Account Number</button>
+        <p class="order-error" id="payError" role="alert"></p>
+        <button type="button" class="btn btn-primary" id="paidBtn" style="width:100%;">I have made the transfer</button>
+      </div>
+
+      <!-- STEP 3: done -->
+      <div class="order-card order-closed" id="donePanel" hidden>
+        <h3>Thank you! Your order is in.</h3>
+        <p class="pay-ref" id="doneRef"></p>
+        <p>We will confirm your payment and contact you on the phone number you gave. Keep your order number for reference.</p>
+        <a href="index.html" class="btn btn-navy" style="margin-top:12px;">Back to Home</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>&copy; 2026 Christ Alone Christian Group and Prophetic Ministry. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============================================================
+     ORDER SETTINGS — EDIT ONLY THIS BLOCK
+     ------------------------------------------------------------
+     To switch from your TEST account to the MAIN church account:
+     change bankName / accountNumber / accountName below, commit,
+     and wait for Vercel to redeploy. Nothing else needs to change.
+     ============================================================ */
+  const ORDER_CONFIG = {
+    ordersOpen: true,                 // set to false to close orders
+    itemName: 'Ebenezer 2026 Polo',
+    itemImage: 'images/ebenezer-2026-polo.jpg',
+    unitPrice: 7000,                  // price in Naira per piece. 0 = don't show prices/totals
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'], // use [] if there are no sizes
+
+    // >>> PAYMENT ACCOUNT — replace these with your TEST account first <<<
+    bankName: 'OPAY',
+    accountNumber: '9058234209',
+    accountName: 'SEUN PAUL OLAYEMI'
+  };
+  /* ============================================================ */
+
+  const $ = (id) => document.getElementById(id);
+  const naira = (n) => '\u20A6' + Number(n).toLocaleString('en-NG');
+
+  /* Mobile menu */
+  const mobileMenu = $('mobileMenu'), mobileOverlay = $('mobileOverlay'), hamburgerBtn = $('hamburgerBtn');
+  const setMenu = (open) => {
+    mobileMenu.classList.toggle('is-open', open);
+    mobileOverlay.classList.toggle('is-open', open);
+    hamburgerBtn.classList.toggle('is-active', open);
+    hamburgerBtn.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  hamburgerBtn.addEventListener('click', () => setMenu(!mobileMenu.classList.contains('is-open')));
+  $('mobileMenuClose').addEventListener('click', () => setMenu(false));
+  mobileOverlay.addEventListener('click', () => setMenu(false));
+  window.addEventListener('scroll', () => $('navbar').classList.toggle('is-scrolled', window.scrollY > 30));
+
+  /* Toast */
+  let toastTimer;
+  function showToast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('is-visible'), 2400);
+  }
+
+  /* Page setup from the config */
+  $('itemName').textContent = ORDER_CONFIG.itemName;
+  $('itemImage').src = ORDER_CONFIG.itemImage;
+  $('payBank').textContent = ORDER_CONFIG.bankName;
+  $('payNumber').textContent = ORDER_CONFIG.accountNumber;
+  $('payName').textContent = ORDER_CONFIG.accountName;
+
+  if (ORDER_CONFIG.unitPrice > 0) $('itemPrice').textContent = naira(ORDER_CONFIG.unitPrice) + ' each';
+
+  if (ORDER_CONFIG.sizes.length) {
+    $('oSize').innerHTML = ORDER_CONFIG.sizes.map((s) => `<option value="${s}">${s}</option>`).join('');
+  } else {
+    $('sizeGroup').hidden = true;
+  }
+
+  if (!ORDER_CONFIG.ordersOpen) {
+    $('formPanel').hidden = true;
+    $('closedPanel').hidden = false;
+  }
+
+  function updateTotal() {
+    if (ORDER_CONFIG.unitPrice <= 0) return;
+    const qty = Math.max(1, Math.min(50, parseInt($('oQty').value, 10) || 1));
+    $('totalValue').textContent = naira(qty * ORDER_CONFIG.unitPrice);
+    $('totalRow').hidden = false;
+  }
+  $('oQty').addEventListener('input', updateTotal);
+  updateTotal();
+
+  /* The order being paid for */
+  let currentOrder = null;
+
+  async function post(payload) {
+    const res = await fetch('/api/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.ok === false) throw new Error(data.error || 'Something went wrong. Please try again.');
+    return data;
+  }
+
+  /* Step 1: create the order */
+  $('orderForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    $('formError').textContent = '';
+
+    const name = $('oName').value.trim();
+    const phone = $('oPhone').value.trim();
+    const qty = parseInt($('oQty').value, 10);
+    const size = ORDER_CONFIG.sizes.length ? $('oSize').value : '';
+
+    if (name.length < 2) { $('formError').textContent = 'Please enter your full name.'; return; }
+    if (!/^\+?[\d\s-]{7,20}$/.test(phone)) { $('formError').textContent = 'Please enter a valid phone number.'; return; }
+    if (!Number.isInteger(qty) || qty < 1 || qty > 50) { $('formError').textContent = 'Quantity must be between 1 and 50.'; return; }
+
+    const btn = $('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving your order...';
+    try {
+      const data = await post({ action: 'create', name, phone, quantity: qty, size, website: $('website').value });
+      currentOrder = { id: data.id, reference: data.reference, phone };
+      $('refText').textContent = data.reference;
+      $('doneRef').textContent = data.reference;
+      if (ORDER_CONFIG.unitPrice > 0) {
+        $('payAmount').textContent = naira(qty * ORDER_CONFIG.unitPrice);
+        $('payAmountRow').hidden = false;
+      }
+      $('formPanel').hidden = true;
+      $('payPanel').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      $('formError').textContent = err.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Continue to Payment';
+    }
+  });
+
+  /* Copy account number */
+  $('copyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(ORDER_CONFIG.accountNumber)
+      .then(() => showToast('Account number copied!'))
+      .catch(() => showToast('Could not copy — please copy it manually.'));
+  });
+
+  /* Step 2: customer says they've paid */
+  $('paidBtn').addEventListener('click', async () => {
+    if (!currentOrder) return;
+    $('payError').textContent = '';
+    const btn = $('paidBtn');
+    btn.disabled = true;
+    btn.textContent = 'Confirming...';
+    try {
+      await post({ action: 'claim', id: currentOrder.id, phone: currentOrder.phone });
+      $('payPanel').hidden = true;
+      $('donePanel').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      $('payError').textContent = err.message;
+      btn.disabled = false;
+      btn.textContent = 'I have made the transfer';
+    }
+  });
+</script>
+</body>
+</html>
