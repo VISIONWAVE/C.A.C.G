@@ -2746,3 +2746,12 @@ h1,h2,h3,h4{color:var(--c-indigo-dark)}
 .watch-follow p{margin:0 0 6px;font-size:.92rem}
 .watch .btn-pill{color:var(--logo-green);border-color:var(--logo-green);width:100%;text-align:center}
 .watch .btn-pill:hover{background:var(--logo-green);color:#fff}
+
+/* TikTok video link card (opens TikTok in a new tab) */
+.watch-tiktok{display:block;text-decoration:none;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease}
+.watch-tiktok:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(4,39,26,.3)}
+.watch-tiktok .tt-face{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;aspect-ratio:9/16;background:radial-gradient(circle at 50% 38%,#0B6B3A 0%,#063D24 55%,#04271A 100%);color:#fff}
+.watch-tiktok .tt-play{width:76px;height:76px;border-radius:50%;border:2px solid var(--logo-gold);color:var(--logo-gold);display:grid;place-items:center;padding-left:4px;transition:background .3s ease,color .3s ease,transform .3s cubic-bezier(.3,1.8,.5,1)}
+.watch-tiktok:hover .tt-play{background:var(--logo-gold);color:var(--logo-dark);transform:scale(1.12)}
+.watch-tiktok .tt-label{font-size:.8rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.watch-tiktok .tt-caption{display:block;padding:12px 16px;color:#fff;font-size:.8rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
