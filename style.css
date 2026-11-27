@@ -2731,3 +2731,18 @@ h1,h2,h3,h4{color:var(--c-indigo-dark)}
 .ministry-card[data-category="prayer"]{--mc:#8FA11A}
 .ministry-card:hover{border-top-color:var(--mc)}
 .ministry-media{background:var(--logo-tint)}
+
+
+/* ==========================================================================
+   WATCH & FOLLOW SECTION (church videos + TikTok / Instagram links)
+   ========================================================================== */
+.watch{background:var(--logo-tint)}
+.watch-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:28px}
+.watch-card{margin:0;width:min(300px,100%);background:var(--logo-dark);border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgba(4,39,26,.22)}
+.watch-card video{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:#000}
+.watch-card figcaption{padding:12px 16px;color:#fff;font-size:.8rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
+.watch-follow{width:min(300px,100%);background:#fff;border:1px solid var(--color-border);border-top:4px solid var(--logo-gold);border-radius:18px;padding:34px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px}
+.watch-follow h3{font-size:1.1rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--logo-deep)}
+.watch-follow p{margin:0 0 6px;font-size:.92rem}
+.watch .btn-pill{color:var(--logo-green);border-color:var(--logo-green);width:100%;text-align:center}
+.watch .btn-pill:hover{background:var(--logo-green);color:#fff}
